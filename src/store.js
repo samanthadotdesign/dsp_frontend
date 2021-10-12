@@ -41,7 +41,11 @@ const dashboardReducer = (state, action) => {
 const authReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.ADD_USER:
-      return { };
+      return { loggedIn };
+    case ACTIONS.USER_LOGIN:
+      return { loggedIn: true };
+    default:
+      return state;
   }
 };
 
@@ -49,10 +53,15 @@ const { Provider } = GlobalContext;
 
 export const GlobalProvider = ({ children }) => {
   const [dashboardStore, dashboardDispatch] = useReducer(dashboardReducer, initialState);
-  const [] = useReducer(authReducer, initialAuthState);
+  const [authStore, authDispatch] = useReducer(authReducer, initialAuthState);
   return (
     <Provider
-      value={{ dashboardStore, dashboardDispatch }}
+      value={{
+        dashboardStore,
+        dashboardDispatch,
+        authStore,
+        authDispatch,
+      }}
     >
       {children}
     </Provider>
@@ -86,14 +95,10 @@ export const getData = (dashboardDispatch) => axios.get(`${REACT_APP_BACKEND_URL
   // return result.data;
 });
 
-export const addUser = (dispatch, currentRoute) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/data`, { currentRoute }).then((result) => {
-    dispatch(addRouteAction(result.data));
+export const addUser = (authDispatch) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/signup`).then(() => {
+    authDispatch({
+      type: ACTIONS.ADD_USER,
+    });
   });
 };
-
-// export const updateRoute = (dispatch, index, id, difficultyInput) => {
-//   axios.post(`${REACT_APP_BACKEND_URL}/update`, { id, difficultyInput }).then((result) => {
-//     dispatch(updateRouteAction(result.data));
-//   });
-// };
