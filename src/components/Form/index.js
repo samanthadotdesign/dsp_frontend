@@ -9,7 +9,9 @@ import {
   Label, Error, Input, P, ButtonLink,
 } from '../../styles';
 import ErrorCat from './error.svg';
-import { addUser, GlobalContext } from '../../store';
+import {
+  addUser, loginUser, GlobalContext,
+} from '../../store';
 
 // Field hook from Formik to create reusable input component
 const InputComponent = ({ label, ...props }) => {
@@ -41,8 +43,7 @@ export const ErrorForm = ({ toggleSignUpModal, toggleLogInModal }) => (
 export const SignUpForm = ({
   setLoggedIn, toggleSignUpModal, toggleLogInModal, toggleErrorModal,
 }) => {
-  const { authStore, authDispatch } = useContext(GlobalContext);
-  const { loggedIn } = authStore;
+  const { authDispatch } = useContext(GlobalContext);
 
   const schema = Yup.object().shape({
     name: Yup.string().required(' Maybe a fantasy title?'),
@@ -54,7 +55,7 @@ export const SignUpForm = ({
   // values = {name... email...password }
   const handleSignUpSubmit = async (values) => {
     try {
-      await addUser(authDispatch, values);
+      await loginUser(authDispatch, values);
       toggleSignUpModal();
       setLoggedIn(true);
     } catch (error) {
@@ -95,25 +96,22 @@ export const SignUpForm = ({
 export const LogInForm = ({
   setLoggedIn, toggleLogInModal, toggleSignUpModal, toggleErrorModal,
 }) => {
+  const { authDispatch } = useContext(GlobalContext);
   const schema = Yup.object().shape({
     email: Yup.string().email(' Oops! Is that valid?').required(' We need this :('),
     password: Yup.string().required(' We need this :('),
   });
 
   // Send to database
-  const handleLogInSubmit = (values) => {
-    axios.post('mybackend.heroku.com/login', values).then((result) => {
-      if (result.status === 200) {
-        toggleLogInModal();
-        setLoggedIn(true);
-      }
-      // Handling the errors for not correct login
-      if (result.status === 401) {
-        console.log(result.data);
-        console.log(result);
-        toggleErrorModal();
-      }
-    });
+  const handleLogInSubmit = async (values) => {
+    try {
+      await loginUser(authDispatch, values);
+      toggleLogInModal();
+      setLoggedIn(true);
+    } catch (error) {
+      console.log(error);
+      toggleErrorModal();
+    }
   };
 
   return (

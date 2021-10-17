@@ -44,6 +44,8 @@ const authReducer = (state, action) => {
       return { loggedIn: true };
     case ACTIONS.USER_LOGIN:
       return { loggedIn: true };
+    case ACTIONS.USER_LOGOUT:
+      return { loggedIn: false };
     default:
       return state;
   }
@@ -70,6 +72,9 @@ export const GlobalProvider = ({ children }) => {
 
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3004';
 
+/** ***************** */
+/** ** DASHBOARD **** */
+/** ***************** */
 export const getData = (dashboardDispatch) => axios.get(`${REACT_APP_BACKEND_URL}/data`).then((result) => {
   console.log('**** GET DATA INSIDE STORE ****');
   console.log(result);
@@ -95,12 +100,34 @@ export const getData = (dashboardDispatch) => axios.get(`${REACT_APP_BACKEND_URL
   // return result.data;
 });
 
+/** ***************** */
+/** AUTHENTICATION * */
+/** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
-    // result.data will give us the status codes
     if (result.data === 'OK') {
       authDispatch({
         type: ACTIONS.ADD_USER,
+      });
+    }
+  });
+};
+
+export const loginUser = (authDispatch, values) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
+    if (result.data === 'OK') {
+      authDispatch({
+        type: ACTIONS.USER_LOGIN,
+      });
+    }
+  });
+};
+
+export const logoutUser = (authDispatch, values) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/logout`, values).then((result) => {
+    if (result.data === 'OK') {
+      authDispatch({
+        type: ACTIONS.USER_LOGOUT,
       });
     }
   });
