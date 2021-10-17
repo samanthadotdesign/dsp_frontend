@@ -56,13 +56,9 @@ export default function App() {
         />
 
         {loggedIn && (
-        <Dashboard
-          sections={sections}
-          skills={skills}
-          categoriesCompleted={categoriesCompleted}
-          setCategoriesCompleted={setCategoriesCompleted}
-        />
+        <Dashboard />
         )}
+
         {!loggedIn && (
         <Home
           showLogInModal={showLogInModal}

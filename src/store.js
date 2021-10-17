@@ -6,14 +6,15 @@ export const ACTIONS = {
   GET_CATEGORIES: 'Get completed categories for the user only',
   GET_RESOURCES: 'Get resources added for the user only',
   GET_SKILLS: 'Get completed skills for the user only',
+  ADD_RESOURCES: 'Add new resource for the unique user',
+
   ADD_USER: 'Add new user with list of default skills',
   USER_LOGIN: 'Log existing user into their account',
   USER_LOGOUT: 'Log user out of account',
   USER_AUTH: 'Check if user is logged in',
-  ADD_RESOURCES: 'Add new resource for the unique user',
 };
 
-// Initial dashboard state
+// Initial store states
 const initialState = {
   sections: [],
   categories: [],
@@ -29,6 +30,7 @@ const initialAuthState = {
 
 export const GlobalContext = React.createContext(null);
 
+// Reducer functions
 const dashboardReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.GET_DATA:
@@ -75,30 +77,32 @@ const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://local
 /** ***************** */
 /** ** DASHBOARD **** */
 /** ***************** */
-export const getData = (dashboardDispatch) => axios.get(`${REACT_APP_BACKEND_URL}/data`).then((result) => {
-  console.log('**** GET DATA INSIDE STORE ****');
-  console.log(result);
-  const {
-    sections,
-    categories,
-    skills,
-    resources,
-    categoriesCompleted,
-    skillsCompleted,
-  } = result.data;
-  dashboardDispatch({
-    type: ACTIONS.GET_DATA,
-    payload: {
+export const getData = (dashboardDispatch) => {
+  axios.get(`${REACT_APP_BACKEND_URL}/data`).then((result) => {
+    console.log('**** GET DATA INSIDE STORE ****');
+    console.log(result);
+    const {
       sections,
       categories,
       skills,
       resources,
       categoriesCompleted,
       skillsCompleted,
-    },
-  });
+    } = result.data;
+    dashboardDispatch({
+      type: ACTIONS.GET_DATA,
+      payload: {
+        sections,
+        categories,
+        skills,
+        resources,
+        categoriesCompleted,
+        skillsCompleted,
+      },
+    });
   // return result.data;
-});
+  });
+};
 
 /** ***************** */
 /** AUTHENTICATION * */
