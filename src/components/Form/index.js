@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, useField } from 'formik';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import {
   Label, Error, Input, P, ButtonLink,
 } from '../../styles';
 import ErrorCat from './error.svg';
+import { addUser, GlobalContext } from '../../store';
 
 // Field hook from Formik to create reusable input component
 const InputComponent = ({ label, ...props }) => {
@@ -40,6 +41,9 @@ export const ErrorForm = ({ toggleSignUpModal, toggleLogInModal }) => (
 export const SignUpForm = ({
   setLoggedIn, toggleSignUpModal, toggleLogInModal, toggleErrorModal,
 }) => {
+  const { authStore, authDispatch } = useContext(GlobalContext);
+  const { loggedIn } = authStore;
+
   const schema = Yup.object().shape({
     name: Yup.string().required(' Maybe a fantasy title?'),
     email: Yup.string().email(' Oops! Is that valid?').required(' We need this :('),
@@ -48,18 +52,15 @@ export const SignUpForm = ({
 
   // Send to database
   // values = {name... email...password }
-  const handleSignUpSubmit = (values) => {
-    axios.post('/signup', values).then((result) => {
-      // result.data will give us the status codes
-      if (result.data === 'OK') {
-        toggleSignUpModal();
-        setLoggedIn(true);
-      }
-      // Handle incorrect signup
-      else {
-        toggleErrorModal();
-      }
-    });
+  const handleSignUpSubmit = async (values) => {
+    try {
+      await addUser(authDispatch, values);
+      toggleSignUpModal();
+      setLoggedIn(true);
+    } catch (error) {
+      console.log(error);
+      toggleErrorModal();
+    }
   };
 
   return (

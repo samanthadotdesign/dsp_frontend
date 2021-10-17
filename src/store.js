@@ -41,7 +41,7 @@ const dashboardReducer = (state, action) => {
 const authReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.ADD_USER:
-      return { loggedIn };
+      return { loggedIn: true };
     case ACTIONS.USER_LOGIN:
       return { loggedIn: true };
     default:
@@ -95,10 +95,13 @@ export const getData = (dashboardDispatch) => axios.get(`${REACT_APP_BACKEND_URL
   // return result.data;
 });
 
-export const addUser = (authDispatch) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/signup`).then(() => {
-    authDispatch({
-      type: ACTIONS.ADD_USER,
-    });
+export const addUser = (authDispatch, values) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
+    // result.data will give us the status codes
+    if (result.data === 'OK') {
+      authDispatch({
+        type: ACTIONS.ADD_USER,
+      });
+    }
   });
 };
