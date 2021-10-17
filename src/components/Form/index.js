@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import * as Yup from 'yup';
 import { Formik, Form, useField } from 'formik';
-import axios from 'axios';
 import {
   Submit, Container, H3, ImgDiv,
 } from './styles';
@@ -55,7 +54,7 @@ export const SignUpForm = ({
   // values = {name... email...password }
   const handleSignUpSubmit = async (values) => {
     try {
-      await loginUser(authDispatch, values);
+      await addUser(authDispatch, values);
       toggleSignUpModal();
       setLoggedIn(true);
     } catch (error) {

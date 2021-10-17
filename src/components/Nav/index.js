@@ -1,22 +1,25 @@
-import axios from 'axios';
-import React from 'react';
+import React, { useContext } from 'react';
 import logo from './logo.svg';
 import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
+import { logoutUser, GlobalContext } from '../../store';
 
 export default function Nav({
-  loggedIn, toggleLogInModal, toggleSignUpModal, setLoggedIn,
+  toggleLogInModal, toggleSignUpModal, setLoggedIn,
 }) {
   // Pass in "loggedIn" and use it to conditionally render buttons using ternary statement
+  const { authStore, authDispatch } = useContext(GlobalContext);
+  const { loggedIn } = authStore;
 
-  const handleLogOutSubmit = () => {
-    axios.post('/logout').then((result) => {
-      if (result.data === 'OK') {
-        setLoggedIn(false);
-      }
+  const handleLogOutSubmit = async () => {
+    try {
+      await logoutUser(authDispatch);
+      setLoggedIn(false);
+    } catch (error) {
       // Error handling if the user is unable to log out
-    });
+      console.log(error);
+    }
   };
 
   return (

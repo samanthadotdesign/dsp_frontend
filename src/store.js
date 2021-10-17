@@ -123,8 +123,8 @@ export const loginUser = (authDispatch, values) => {
   });
 };
 
-export const logoutUser = (authDispatch, values) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/logout`, values).then((result) => {
+export const logoutUser = (authDispatch) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/logout`).then((result) => {
     if (result.data === 'OK') {
       authDispatch({
         type: ACTIONS.USER_LOGOUT,
