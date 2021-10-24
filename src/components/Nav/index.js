@@ -20,6 +20,15 @@ export default function Nav() {
     }
   };
 
+  // We use event handler functions to call the dispatch function, prevents an infinite loop
+  const toggleLoginModal = () => {
+    modalDispatch({ type: ACTIONS.LOGIN_MODAL });
+  };
+
+  const toggleSignupModal = () => {
+    modalDispatch({ type: ACTIONS.SIGNUP_MODAL });
+  };
+
   return (
     <>
       <NavBar>
@@ -32,7 +41,7 @@ export default function Nav() {
         && (
         <Button
           type="button"
-          onClick={modalDispatch({ type: ACTIONS.LOGIN_MODAL })}
+          onClick={toggleLoginModal}
         >
           Log in
         </Button>
@@ -42,7 +51,7 @@ export default function Nav() {
         && (
         <Button
           type="button"
-          onClick={modalDispatch({ type: ACTIONS.SIGNUP_MODAL })}
+          onClick={toggleSignupModal}
         >
           Sign up
         </Button>

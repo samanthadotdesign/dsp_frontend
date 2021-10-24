@@ -70,6 +70,7 @@ const authReducer = (state, action) => {
 const modalReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.SIGNUP_MODAL:
+      console.log('*** SIGNING UP ****');
       return {
         signupModal: true,
         loginModal: false,

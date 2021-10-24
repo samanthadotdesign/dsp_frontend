@@ -4,20 +4,21 @@ import {
 } from './styles';
 import { ACTIONS, GlobalContext } from '../../store';
 
-const Close = () => {
-  const { modalDispatch } = useContext(GlobalContext);
-  return (
-    <CloseDiv>
-      <Span onClick={modalDispatch({ type: ACTIONS.CLOSE_MODALS })}>&times;</Span>
-    </CloseDiv>
-  );
-};
-
 const ModalComponent = ({ children }) => {
   const { modalDispatch } = useContext(GlobalContext);
+  const toggleClose = () => {
+    modalDispatch({ type: ACTIONS.CLOSE_MODALS });
+  };
+
+  const Close = () => (
+    <CloseDiv>
+      <Span onClick={toggleClose}>&times;</Span>
+    </CloseDiv>
+  );
+
   return (
     <>
-      <BG onClick={modalDispatch({ type: ACTIONS.CLOSE_MODALS })} />
+      <BG onClick={toggleClose} />
       <Modal>
         <Close />
         {children}
