@@ -3,20 +3,17 @@ import logo from './logo.svg';
 import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
-import { logoutUser, GlobalContext } from '../../store';
+import { logoutUser, GlobalContext, ACTIONS } from '../../store';
 
-export default function Nav({
-  toggleLogInModal, toggleSignUpModal, setLoggedIn,
-}) {
+export default function Nav() {
   // Pass in "loggedIn" and use it to conditionally render buttons using ternary statement
-  const { authStore, authDispatch } = useContext(GlobalContext);
+  const { authStore, authDispatch, modalDispatch } = useContext(GlobalContext);
   const { loggedIn } = authStore;
 
   const handleLogOutSubmit = async () => {
     console.log('*** LOGGING OUT ****');
     try {
       await logoutUser(authDispatch);
-      setLoggedIn(false);
     } catch (error) {
       // Error handling if the user is unable to log out
       console.log(error);
@@ -26,20 +23,16 @@ export default function Nav({
   return (
     <>
       <NavBar>
-
         <a aria-label="nav" href="/"><Logo src={logo} /></a>
-
         <NavLinks>
-          <Button
-            type="button"
-          >
+          <Button type="button">
             About
           </Button>
           {!loggedIn
         && (
         <Button
           type="button"
-          onClick={toggleLogInModal}
+          onClick={modalDispatch({ type: ACTIONS.LOGIN_MODAL })}
         >
           Log in
         </Button>
@@ -49,7 +42,7 @@ export default function Nav({
         && (
         <Button
           type="button"
-          onClick={toggleSignUpModal}
+          onClick={modalDispatch({ type: ACTIONS.SIGNUP_MODAL })}
         >
           Sign up
         </Button>

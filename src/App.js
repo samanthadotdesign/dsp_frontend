@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GlobalStyle } from './styles';
 import { GlobalProvider } from './store';
 import Dashboard from './components/Dashboard';
 import Home from './components/Home/index';
 import Nav from './components/Nav/index';
+import Modal from './components/Modal';
 
 export default function App() {
   return (

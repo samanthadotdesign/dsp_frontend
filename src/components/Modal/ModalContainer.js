@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   BG, Modal, CloseDiv, Span,
 } from './styles';
+import { ACTIONS, GlobalContext } from '../../store';
 
-const Close = ({ toggleModal }) => (
-  <>
+const Close = () => {
+  const { modalDispatch } = useContext(GlobalContext);
+  return (
     <CloseDiv>
-      <Span onClick={toggleModal}>&times;</Span>
+      <Span onClick={modalDispatch({ type: ACTIONS.CLOSE_MODALS })}>&times;</Span>
     </CloseDiv>
-  </>
-);
+  );
+};
 
-const ModalComponent = ({ toggleModal, children }) => (
-  <>
-    <BG onClick={toggleModal} />
-    <Modal>
-      <Close toggleModal={toggleModal} />
-      {children}
-    </Modal>
-  </>
-);
+const ModalComponent = ({ children }) => {
+  const { modalDispatch } = useContext(GlobalContext);
+  return (
+    <>
+      <BG onClick={modalDispatch({ type: ACTIONS.CLOSE_MODALS })} />
+      <Modal>
+        <Close />
+        {children}
+      </Modal>
+    </>
+  );
+};
 
 export default ModalComponent;
