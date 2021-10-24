@@ -12,6 +12,11 @@ export const ACTIONS = {
   USER_LOGIN: 'Log existing user into their account',
   USER_LOGOUT: 'Log user out of account',
   USER_AUTH: 'Check if user is logged in',
+
+  CLOSE_MODALS: 'Closes all modals',
+  SIGNUP_MODAL: 'Opens sign up modal only',
+  LOGIN_MODAL: 'Opens login modal only',
+  ERROR_MODAL: 'Opens error modal only',
 };
 
 // Initial store states
@@ -26,6 +31,13 @@ const initialState = {
 
 const initialAuthState = {
   loggedIn: false,
+  userId: 0,
+};
+
+const initialModalState = {
+  signupModal: false,
+  loginModal: false,
+  errorModal: false,
 };
 
 export const GlobalContext = React.createContext(null);
@@ -48,16 +60,51 @@ const authReducer = (state, action) => {
       return { loggedIn: true };
     case ACTIONS.USER_LOGOUT:
       return { loggedIn: false };
+    case ACTIONS.USER_AUTH:
+      return { loggedIn: action.payload };
     default:
       return state;
   }
 };
 
-const { Provider } = GlobalContext;
+const modalReducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.SIGNUP_MODAL:
+      return {
+        signupModal: true,
+        loginModal: false,
+        errorModal: false,
+      };
+    case ACTIONS.LOGIN_MODAL:
+      return {
+        signupModal: false,
+        loginModal: true,
+        errorModal: false,
+      };
+    case ACTIONS.ERROR_MODAL:
+      return {
+        signupModal: false,
+        loginModal: false,
+        errorModal: true,
+      };
+    case ACTIONS.CLOSE_MODALS:
+      return {
+        signupModal: false,
+        loginModal: false,
+        errorModal: false,
+      };
+    default:
+      return state;
+  }
+};
 
+// Global Provider for entire application
+const { Provider } = GlobalContext;
 export const GlobalProvider = ({ children }) => {
   const [dashboardStore, dashboardDispatch] = useReducer(dashboardReducer, initialState);
   const [authStore, authDispatch] = useReducer(authReducer, initialAuthState);
+  const [modalStore, modalDispatch] = useReducer(modalReducer, initialModalState);
+
   return (
     <Provider
       value={{
@@ -65,6 +112,8 @@ export const GlobalProvider = ({ children }) => {
         dashboardDispatch,
         authStore,
         authDispatch,
+        modalStore,
+        modalDispatch,
       }}
     >
       {children}
@@ -72,15 +121,14 @@ export const GlobalProvider = ({ children }) => {
   );
 };
 
+// Connections to database
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3004';
 
 /** ***************** */
 /** ** DASHBOARD **** */
 /** ***************** */
-export const getData = (dashboardDispatch) => {
-  axios.get(`${REACT_APP_BACKEND_URL}/data`).then((result) => {
-    console.log('**** GET DATA INSIDE STORE ****');
-    console.log(result);
+export const getData = (dashboardDispatch, userId) => {
+  axios.get(`${REACT_APP_BACKEND_URL}/data/${userId}`).then((result) => {
     const {
       sections,
       categories,
@@ -109,6 +157,7 @@ export const getData = (dashboardDispatch) => {
 /** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
+    console.log(result);
     if (result.data === 'OK') {
       authDispatch({
         type: ACTIONS.ADD_USER,
@@ -129,10 +178,23 @@ export const loginUser = (authDispatch, values) => {
 
 export const logoutUser = (authDispatch) => {
   axios.post(`${REACT_APP_BACKEND_URL}/logout`).then((result) => {
+    console.log('running logout function');
     if (result.data === 'OK') {
       authDispatch({
         type: ACTIONS.USER_LOGOUT,
       });
     }
+  });
+};
+
+// On page load, checks if there is already a cookie/user is logged in
+export const authUser = (authDispatch) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/auth`).then((result) => {
+    console.log(result);
+    // Expecting result to be true or false depending if cookies exist
+    authDispatch({
+      type: ACTIONS.USER_AUTH,
+      payload: result,
+    });
   });
 };

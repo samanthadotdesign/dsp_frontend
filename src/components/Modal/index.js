@@ -1,24 +1,28 @@
-import React from 'react';
-import {
-  BG, Modal, CloseDiv, Span,
-} from './styles';
+import React, { useContext } from 'react';
+import { GlobalContext } from '../../store';
+import ModalContainer from './ModalContainer';
+import { SignUpForm, LogInForm, ErrorForm } from '../Form';
 
-const Close = ({ toggleModal }) => (
-  <>
-    <CloseDiv>
-      <Span onClick={toggleModal}>&times;</Span>
-    </CloseDiv>
-  </>
-);
-
-const ModalComponent = ({ toggleModal, children }) => (
-  <>
-    <BG onClick={toggleModal} />
-    <Modal>
-      <Close toggleModal={toggleModal} />
-      {children}
-    </Modal>
-  </>
-);
-
-export default ModalComponent;
+export default function Modal() {
+  const { modalStore } = useContext(GlobalContext);
+  const { signupModal, loginModal, errorModal } = modalStore;
+  return (
+    <>
+      {signupModal && (
+      <ModalContainer>
+        <SignUpForm />
+      </ModalContainer>
+      )}
+      {loginModal && (
+      <ModalContainer>
+        <LogInForm />
+      </ModalContainer>
+      )}
+      {errorModal && (
+      <ModalContainer>
+        <ErrorForm />
+      </ModalContainer>
+      )}
+    </>
+  );
+}

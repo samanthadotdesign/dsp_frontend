@@ -13,6 +13,7 @@ export default function Nav({
   const { loggedIn } = authStore;
 
   const handleLogOutSubmit = async () => {
+    console.log('*** LOGGING OUT ****');
     try {
       await logoutUser(authDispatch);
       setLoggedIn(false);

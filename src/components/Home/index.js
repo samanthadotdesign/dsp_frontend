@@ -1,53 +1,45 @@
 import React from 'react';
 import { GlobalStyle, P } from '../../styles';
-import Modal from '../Modal';
+import ModalContainer from '../Modal/ModalContainer';
 import { SignUpForm, LogInForm, ErrorForm } from '../Form';
 import { Section, Em } from './styles';
 import { Animation } from './Animation';
 
-export default function Home({
-  showLogInModal,
-  toggleLogInModal,
-  toggleSignUpModal,
-  showSignUpModal,
-  setLoggedIn,
-  showErrorModal,
-  toggleErrorModal,
-}) {
+export default function Home() {
   return (
     <>
       <GlobalStyle />
       <Animation />
 
       {showSignUpModal && (
-        <Modal toggleModal={toggleSignUpModal}>
+        <ModalContainer toggleModal={toggleSignUpModal}>
           <SignUpForm
             setLoggedIn={setLoggedIn}
             toggleSignUpModal={toggleSignUpModal}
             toggleLogInModal={toggleLogInModal}
             toggleErrorModal={toggleErrorModal}
           />
-        </Modal>
+        </ModalContainer>
       )}
 
       {showLogInModal && (
-      <Modal toggleModal={toggleLogInModal}>
+      <ModalContainer toggleModal={toggleLogInModal}>
         <LogInForm
           setLoggedIn={setLoggedIn}
           toggleLogInModal={toggleLogInModal}
           toggleSignUpModal={toggleSignUpModal}
           toggleErrorModal={toggleErrorModal}
         />
-      </Modal>
+      </ModalContainer>
       )}
 
       {showErrorModal && (
-      <Modal toggleModal={toggleErrorModal}>
+      <ModalContainer toggleModal={toggleErrorModal}>
         <ErrorForm
           toggleLogInModal={toggleLogInModal}
           toggleSignUpModal={toggleSignUpModal}
         />
-      </Modal>
+      </ModalContainer>
       )}
 
       <Section>

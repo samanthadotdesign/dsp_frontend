@@ -4,7 +4,9 @@ import Section from '../Section';
 import Category from '../Category';
 
 export default function Dashboard() {
-  const { dashboardStore, dashboardDispatch } = useContext(GlobalContext);
+  const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
+  const { loggedIn } = authStore;
+
   const {
     sections,
     categories,
@@ -18,7 +20,6 @@ export default function Dashboard() {
   useEffect(async () => {
     try {
       await getData(dashboardDispatch);
-      console.log('initialized all the data inside the store');
     } catch (error) {
       console.log(error);
     }
