@@ -9,13 +9,12 @@ import {
 } from '../../styles';
 import ErrorCat from './error.svg';
 import {
-  addUser, loginUser, GlobalContext,
+  addUser, loginUser, GlobalContext, ACTIONS,
 } from '../../store';
 
 // Field hook from Formik to create reusable input component
 const InputComponent = ({ label, ...props }) => {
   const [field, meta] = useField(props);
-
   return (
     <Label>
       {label}
@@ -27,22 +26,30 @@ const InputComponent = ({ label, ...props }) => {
 };
 
 // Error handling
-export const ErrorForm = ({ toggleSignUpModal, toggleLogInModal }) => (
-  <Container>
-    <ImgDiv>
-      <img alt="Error" src={ErrorCat} />
-    </ImgDiv>
-    <H3>Sorry, we didn't catch that.</H3>
-    <Submit onClick={toggleSignUpModal}>Create new account</Submit>
-    <ButtonLink onClick={toggleLogInModal}>Try logging in again</ButtonLink>
-  </Container>
-);
+export const ErrorForm = () => {
+  const { modalDispatch } = useContext(GlobalContext);
+  const toggleSignUpModal = () => {
+    modalDispatch({ type: ACTIONS.SIGNUP_MODAL });
+  };
+  const toggleLogInModal = () => {
+    modalDispatch({ type: ACTIONS.LOGIN_MODAL });
+  };
+
+  return (
+    <Container>
+      <ImgDiv>
+        <img alt="Error" src={ErrorCat} />
+      </ImgDiv>
+      <H3>Sorry, we didn't catch that.</H3>
+      <Submit onClick={toggleSignUpModal}>Create new account</Submit>
+      <ButtonLink onClick={toggleLogInModal}>Try logging in again</ButtonLink>
+    </Container>
+  );
+};
 
 // Sign up modal
-export const SignUpForm = ({
-  setLoggedIn, toggleSignUpModal, toggleLogInModal, toggleErrorModal,
-}) => {
-  const { authDispatch } = useContext(GlobalContext);
+export const SignUpForm = () => {
+  const { authDispatch, modalDispatch } = useContext(GlobalContext);
 
   const schema = Yup.object().shape({
     name: Yup.string().required(' Maybe a fantasy title?'),
@@ -50,16 +57,21 @@ export const SignUpForm = ({
     password: Yup.string().required(' We need this :('),
   });
 
+  const toggleLogInModal = () => {
+    modalDispatch({ type: ACTIONS.LOGIN_MODAL });
+  };
+
   // Send to database
   // values = {name... email...password }
   const handleSignUpSubmit = async (values) => {
     try {
       await addUser(authDispatch, values);
-      toggleSignUpModal();
-      setLoggedIn(true);
+      console.log('added user');
+      await modalDispatch({ type: ACTIONS.CLOSE_MODALS });
     } catch (error) {
+      console.log('error in signup found');
       console.log(error);
-      toggleErrorModal();
+      await modalDispatch({ type: ACTIONS.ERROR_MODAL });
     }
   };
 
@@ -92,24 +104,26 @@ export const SignUpForm = ({
   );
 };
 
-export const LogInForm = ({
-  setLoggedIn, toggleLogInModal, toggleSignUpModal, toggleErrorModal,
-}) => {
-  const { authDispatch } = useContext(GlobalContext);
+export const LogInForm = () => {
+  const { authDispatch, modalDispatch } = useContext(GlobalContext);
+
   const schema = Yup.object().shape({
     email: Yup.string().email(' Oops! Is that valid?').required(' We need this :('),
     password: Yup.string().required(' We need this :('),
   });
 
+  const toggleSignUpModal = () => {
+    modalDispatch({ type: ACTIONS.SIGNUP_MODAL });
+  };
+
   // Send to database
   const handleLogInSubmit = async (values) => {
     try {
       await loginUser(authDispatch, values);
-      toggleLogInModal();
-      setLoggedIn(true);
+      await modalDispatch({ type: ACTIONS.CLOSE_MODALS });
     } catch (error) {
       console.log(error);
-      toggleErrorModal();
+      await modalDispatch({ type: ACTIONS.ERROR_MODAL });
     }
   };
 
