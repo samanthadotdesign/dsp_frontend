@@ -66,7 +66,6 @@ export const SignUpForm = () => {
   const handleSignUpSubmit = async (values) => {
     try {
       await addUser(authDispatch, values);
-      console.log('added user');
       await modalDispatch({ type: ACTIONS.CLOSE_MODALS });
     } catch (error) {
       console.log('error in signup found');

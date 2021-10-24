@@ -12,6 +12,7 @@ export const ACTIONS = {
   USER_LOGIN: 'Log existing user into their account',
   USER_LOGOUT: 'Log user out of account',
   USER_AUTH: 'Check if user is logged in',
+  USER_ERROR: 'Network error for logging in or signing up user',
 
   CLOSE_MODALS: 'Closes all modals',
   SIGNUP_MODAL: 'Opens sign up modal only',
@@ -32,6 +33,7 @@ const initialState = {
 const initialAuthState = {
   loggedIn: false,
   userId: 0,
+  error: false,
 };
 
 const initialModalState = {
@@ -62,6 +64,8 @@ const authReducer = (state, action) => {
       return { loggedIn: false };
     case ACTIONS.USER_AUTH:
       return { loggedIn: action.payload };
+    case ACTIONS.USER_ERROR:
+      return;
     default:
       return state;
   }
@@ -162,6 +166,8 @@ export const addUser = (authDispatch, values) => {
       authDispatch({
         type: ACTIONS.ADD_USER,
       });
+    } else {
+      console.log('****ERROR FOUND****');
     }
   });
 };
@@ -178,7 +184,6 @@ export const loginUser = (authDispatch, values) => {
 
 export const logoutUser = (authDispatch) => {
   axios.post(`${REACT_APP_BACKEND_URL}/logout`).then((result) => {
-    console.log('running logout function');
     if (result.data === 'OK') {
       authDispatch({
         type: ACTIONS.USER_LOGOUT,
