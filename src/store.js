@@ -57,15 +57,21 @@ const dashboardReducer = (state, action) => {
 const authReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.ADD_USER:
-      return { loggedIn: true };
+      return {
+        loggedIn: true,
+        userId: action.payload,
+        error: false,
+      };
     case ACTIONS.USER_LOGIN:
-      return { loggedIn: true };
+      return {
+        loggedIn: true,
+      };
     case ACTIONS.USER_LOGOUT:
       return { loggedIn: false };
     case ACTIONS.USER_AUTH:
       return { loggedIn: action.payload };
     case ACTIONS.USER_ERROR:
-      return;
+      return state;
     default:
       return state;
   }
@@ -161,14 +167,17 @@ export const getData = (dashboardDispatch, userId) => {
 /** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
-    console.log(result);
-    if (result.data === 'OK') {
+    const userId = result.data.newUser.id;
+    console.log(result.data);
+    if (result.data.status === 'OK') {
       authDispatch({
         type: ACTIONS.ADD_USER,
+        payload: userId,
       });
-    } else {
-      console.log('****ERROR FOUND****');
     }
+    // else {
+    // Error handling if unable to add user to system
+    // }
   });
 };
 
