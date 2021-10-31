@@ -5,25 +5,27 @@ import Category from '../Category';
 
 export default function Dashboard() {
   const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
-  const { loggedIn } = authStore;
-
+  const { loggedIn, userId } = authStore;
   const {
     sections,
-    categories,
-    skills,
-    resources,
     categoriesCompleted,
-    skillsCompleted,
   } = dashboardStore;
 
   // Initializes on load all the info from the database
   useEffect(async () => {
     try {
-      await getData(dashboardDispatch);
+      // If user is logged in, show user's dashboard data
+      if (loggedIn) {
+        await getData(dashboardDispatch, userId);
+      }
+      // If user isn't logged in, show all the dashboard data anyway
+      else {
+        await getData(dashboardDispatch, 1);
+      }
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [loggedIn]);
 
   return (
     <div>
@@ -31,11 +33,8 @@ export default function Dashboard() {
 
       {sections && sections.map((section) => (
         <Section
-          id={section.id}
+          sectionId={section.id}
           sectionName={section.sectionName}
-          skills={skills}
-          categoriesCompleted={categoriesCompleted}
-          // setCategoriesCompleted={setCategoriesCompleted}
         />
       ))}
     </div>

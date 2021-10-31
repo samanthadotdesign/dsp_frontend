@@ -3,15 +3,15 @@ import axios from 'axios';
 
 export const ACTIONS = {
   GET_DATA: 'Get all initial data to show dashboard',
-  GET_CATEGORIES: 'Get completed categories for the user only',
-  GET_RESOURCES: 'Get resources added for the user only',
-  GET_SKILLS: 'Get completed skills for the user only',
+  GET_USER_DATA: 'Get all skills and categories for user',
+  GET_USER_RESOURCES: 'Get all the resources that belong to user',
+  COMPLETE_SKILL: 'Add completed skill to user',
+  COMPLETE_CATEGORY: 'Add completed category of skills to user',
   ADD_RESOURCES: 'Add new resource for the unique user',
 
-  ADD_USER: 'Add new user with list of default skills',
-  USER_LOGIN: 'Log existing user into their account',
+  USER_LOGGEDIN: 'Add or log in new user with list of default skills',
   USER_LOGOUT: 'Log user out of account',
-  USER_AUTH: 'Check if user is logged in',
+  USER_AUTH: 'Check if user is logged in or not',
   USER_ERROR: 'Network error for logging in or signing up user',
 
   CLOSE_MODALS: 'Closes all modals',
@@ -27,7 +27,12 @@ const initialState = {
   skills: [],
   resources: [],
   categoriesCompleted: [],
+  // sectionSkills = [ { skillName: ..., skillImg: ..., completed: True }, {} ]
+  sectionSkills: [],
+  resourceSkills: [],
   skillsCompleted: [],
+  skillsInCategories: [],
+  skillsHoverState: [],
 };
 
 const initialAuthState = {
@@ -49,6 +54,21 @@ const dashboardReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.GET_DATA:
       return { ...action.payload };
+    case ACTIONS.GET_USER_DATA:
+      return {
+        ...state,
+        skillsCompleted: action.payload.skillIdsCompleted,
+        skillsInCategories: action.payload.skillsInCategories,
+      };
+    case ACTIONS.GET_USER_RESOURCES:
+      return {
+        ...state,
+        resourceSkills: action.payload,
+      };
+    // case ACTIONS.COMPLETE_SKILL:
+    //   return state;
+    // case ACTIONS.COMPLETE_CATEGORY:
+    //   return state;
     default:
       return state;
   }
@@ -56,20 +76,24 @@ const dashboardReducer = (state, action) => {
 
 const authReducer = (state, action) => {
   switch (action.type) {
-    case ACTIONS.ADD_USER:
+    case ACTIONS.USER_LOGGEDIN:
       return {
         loggedIn: true,
         userId: action.payload,
         error: false,
       };
-    case ACTIONS.USER_LOGIN:
-      return {
-        loggedIn: true,
-      };
     case ACTIONS.USER_LOGOUT:
-      return { loggedIn: false };
+      return {
+        loggedIn: false,
+        userId: 0,
+        error: false,
+      };
     case ACTIONS.USER_AUTH:
-      return { loggedIn: action.payload };
+      return {
+        loggedIn: action.payload.loggedIn,
+        userId: action.payload.userId,
+        error: false,
+      };
     case ACTIONS.USER_ERROR:
       return state;
     default:
@@ -137,6 +161,8 @@ const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://local
 /** ***************** */
 /** ** DASHBOARD **** */
 /** ***************** */
+
+// Get initial data to be displayed on dashboard
 export const getData = (dashboardDispatch, userId) => {
   axios.get(`${REACT_APP_BACKEND_URL}/data/${userId}`).then((result) => {
     const {
@@ -144,8 +170,6 @@ export const getData = (dashboardDispatch, userId) => {
       categories,
       skills,
       resources,
-      categoriesCompleted,
-      skillsCompleted,
     } = result.data;
     dashboardDispatch({
       type: ACTIONS.GET_DATA,
@@ -154,11 +178,44 @@ export const getData = (dashboardDispatch, userId) => {
         categories,
         skills,
         resources,
-        categoriesCompleted,
-        skillsCompleted,
       },
     });
   // return result.data;
+  });
+};
+
+// Get all categories for a particular section id
+export const getSectionData = (dashboardDispatch, skills, sectionId, userId) => {
+  axios.get(`${REACT_APP_BACKEND_URL}/section/${sectionId}/${userId}`).then((result) => {
+    console.log('**** SECTION DATA ****', result.data);
+    const { categoryIds, skillIdsCompleted } = result.data;
+
+    // Get all the skills for each section
+    const skillsInCategories = skills.filter((skill) => categoryIds.includes(skill.categoryId));
+
+    const temporalSectionSkills = new Array(skillsInCategories.length).fill(false);
+
+    dashboardDispatch({
+      type: ACTIONS.GET_USER_DATA,
+      payload: {
+        // Set skill ids completed so we can set it inside the skill boolean
+        skillIdsCompleted,
+        // Setting the conditions for muted/colored
+        skillsInCategories,
+        temporalSectionSkills,
+      },
+    });
+  });
+};
+
+// Find the resources via skillId and userId
+export const getUserResources = (dashboardDispatch, skillId, userId) => {
+  axios.get(`${REACT_APP_BACKEND_URL}/resources/${skillId}/${userId}`).then((result) => {
+    console.log('GET USER RESOURCES FROM STORE', result.data);
+    dashboardDispatch({
+      type: ACTIONS.GET_USER_RESOURCES,
+      payload: result.data,
+    });
   });
 };
 
@@ -167,12 +224,10 @@ export const getData = (dashboardDispatch, userId) => {
 /** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
-    const userId = result.data.newUser.id;
-    console.log(result.data);
     if (result.data.status === 'OK') {
       authDispatch({
-        type: ACTIONS.ADD_USER,
-        payload: userId,
+        type: ACTIONS.USER_LOGGEDIN,
+        payload: result.data.newUser.id,
       });
     }
     // else {
@@ -183,9 +238,10 @@ export const addUser = (authDispatch, values) => {
 
 export const loginUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
-    if (result.data === 'OK') {
+    if (result.data.status === 'OK') {
       authDispatch({
-        type: ACTIONS.USER_LOGIN,
+        type: ACTIONS.USER_LOGGEDIN,
+        payload: result.data.userId,
       });
     }
   });
