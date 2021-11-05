@@ -5,20 +5,34 @@ import Resource from '../Resource/Resource';
 import { Grid, SectionDiv, HoverResourceDiv } from './styles';
 import { H1 } from '../../styles';
 
+// For each section component, print the skills and its resources
 export default function Section({
   sectionId,
   sectionName,
 }) {
   const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
-  const { userId } = authStore;
-  const { skills, sectionSkills } = dashboardStore;
+  const { categories, skillIdsCompleted, skills } = dashboardStore;
 
   // On load, print all the skills for each section
-  // For each section, get all the categoryId
-  // section 0 = [0], section 1 = [1, 2, 3], section 2 = [4, 5]
-  useEffect(async () => {
-    await getSectionData(dashboardDispatch, skills, sectionId, userId);
-  }, []);
+  // section -> category (sectionId) -> skill
+  // array of categories in the section [ { id, categoryName ... sectionId }]
+  const categoriesInSection = categories.filter((category) => category.sectionId === sectionId);
+
+  // array of skills in the section
+  const skillsInSection = skills.filter((skill) => {
+    const { categoryId } = skill;
+    const singleSkillInCategory = categoriesInSection.find((category) => category.id === categoryId);
+    return singleSkillInCategory;
+  });
+
+  // Color skills that are completed
+  const populatedSkills = skillsInSection.map((skill) => {
+    const condition = skillIdsCompleted.find((skillId) => skillId === skill.id);
+    if (condition) {
+      return { ...skill, isCompleted: true };
+    }
+    return skill;
+  });
 
   // const handlePointerOver = (index) => {
   //   const tempArray = [...new Array(sectionSkills.length).fill(false)];
@@ -33,33 +47,15 @@ export default function Section({
       <SectionDiv id={sectionId}>
         <H1>{sectionName}</H1>
         {/* For every section, create a grid for all the skills with that section id */}
-        {/* <Grid className="grid"> */}
-        {/* Map an array of skill objects into divs */}
-        {/* {sectionSkills.map((skill, index) => (
-            <HoverResourceDiv
-              onPointerOver={() => handlePointerOver(index)}
-            > */}
-        {/* <Skill
-                skillName={skill.skillName}
-                skillImg={skill.skillImg}
-                skillCompleted={skillCompletedArr.includes(skill.id)}
-              /> */}
-        {/* Todo: remove hoverresourcediv styled component & conditionally render the resource div */}
-        {/* <Resource
-                skillId={skill.id}
-                skillName={skill.skillName}
-                resourceSkills={resourceSkills}
-                setResourceSkills={setResourceSkills}
-                skillCompletedArr={skillCompletedArr}
-                skillCompleted={skillCompletedArr.includes(skill.id)}
-                categoriesCompleted={categoriesCompleted}
-                setSkillCompleted={setSkillCompleted}
-                setCategoriesCompleted={setCategoriesCompleted}
-              />
-            </HoverResourceDiv>
-          ))} */}
-        {/* </Grid> */}
-
+        <Grid className="grid">
+          {/* Map an array of skill objects into divs */}
+          {populatedSkills.map((skill, index) => (
+            <Skill
+              skill={skill}
+              key={`skill-${index}`}
+            />
+          ))}
+        </Grid>
       </SectionDiv>
     </>
   );

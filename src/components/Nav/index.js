@@ -1,14 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import logo from './logo.svg';
 import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
-import { logoutUser, GlobalContext, ACTIONS } from '../../store';
+import {
+  logoutUser, GlobalContext, ACTIONS, getData,
+} from '../../store';
 
 export default function Nav() {
   // Pass in "loggedIn" and use it to conditionally render buttons using ternary statement
-  const { authStore, authDispatch, modalDispatch } = useContext(GlobalContext);
-  const { loggedIn } = authStore;
+  const {
+    dashboardDispatch, authStore, authDispatch, modalDispatch,
+  } = useContext(GlobalContext);
+  const { loggedIn, userId } = authStore;
+
+  // Getting dashboard data when nav is loaded
+  useEffect(async () => {
+    try {
+      if (loggedIn) {
+        await getData(dashboardDispatch, userId);
+      } else {
+        await getData(dashboardDispatch, 0);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
 
   const handleLogOutSubmit = async () => {
     try {

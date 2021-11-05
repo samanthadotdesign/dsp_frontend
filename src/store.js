@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export const ACTIONS = {
   GET_DATA: 'Get all initial data to show dashboard',
@@ -26,13 +27,8 @@ const initialState = {
   categories: [],
   skills: [],
   resources: [],
-  categoriesCompleted: [],
-  // sectionSkills = [ { skillName: ..., skillImg: ..., completed: True }, {} ]
-  sectionSkills: [],
-  resourceSkills: [],
-  skillsCompleted: [],
-  skillsInCategories: [],
-  skillsHoverState: [],
+  categoryIdsCompleted: [], // categoryIds completed so I can render the stickers
+  skillIdsCompleted: [], // skillIds completed
 };
 
 const initialAuthState = {
@@ -134,6 +130,7 @@ const modalReducer = (state, action) => {
 
 // Global Provider for entire application
 const { Provider } = GlobalContext;
+
 export const GlobalProvider = ({ children }) => {
   const [dashboardStore, dashboardDispatch] = useReducer(dashboardReducer, initialState);
   const [authStore, authDispatch] = useReducer(authReducer, initialAuthState);
@@ -155,6 +152,10 @@ export const GlobalProvider = ({ children }) => {
   );
 };
 
+GlobalProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
 // Connections to database
 const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3004';
 
@@ -165,46 +166,34 @@ const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://local
 // Get initial data to be displayed on dashboard
 export const getData = (dashboardDispatch, userId) => {
   axios.get(`${REACT_APP_BACKEND_URL}/data/${userId}`).then((result) => {
-    const {
-      sections,
-      categories,
-      skills,
-      resources,
-    } = result.data;
     dashboardDispatch({
       type: ACTIONS.GET_DATA,
-      payload: {
-        sections,
-        categories,
-        skills,
-        resources,
-      },
+      payload: result.data,
     });
-  // return result.data;
   });
 };
 
 // Get all categories for a particular section id
 export const getSectionData = (dashboardDispatch, skills, sectionId, userId) => {
   axios.get(`${REACT_APP_BACKEND_URL}/section/${sectionId}/${userId}`).then((result) => {
-    console.log('**** SECTION DATA ****', result.data);
-    const { categoryIds, skillIdsCompleted } = result.data;
+    console.log('**** SECTION DATA INSIDE STORE ****', result.data);
+    // const { categoryIds, skillIdsCompleted } = result.data;
 
     // Get all the skills for each section
-    const skillsInCategories = skills.filter((skill) => categoryIds.includes(skill.categoryId));
+    // const skillsInCategories = skills.filter((skill) => categoryIds.includes(skill.categoryId));
 
-    const temporalSectionSkills = new Array(skillsInCategories.length).fill(false);
+    // const temporalSectionSkills = new Array(skillsInCategories.length).fill(false);
 
-    dashboardDispatch({
-      type: ACTIONS.GET_USER_DATA,
-      payload: {
-        // Set skill ids completed so we can set it inside the skill boolean
-        skillIdsCompleted,
-        // Setting the conditions for muted/colored
-        skillsInCategories,
-        temporalSectionSkills,
-      },
-    });
+    // dashboardDispatch({
+    //   type: ACTIONS.GET_USER_DATA,
+    // payload: {
+    //   // Set skill ids completed so we can set it inside the skill boolean
+    //   skillIdsCompleted,
+    //   // Setting the conditions for muted/colored
+    //   skillsInCategories,
+    //   // temporalSectionSkills,
+    // },
+    // });
   });
 };
 
