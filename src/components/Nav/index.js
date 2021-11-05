@@ -4,7 +4,7 @@ import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
 import {
-  logoutUser, GlobalContext, ACTIONS, getData,
+  logoutUser, GlobalContext, ACTIONS, getData, authUser,
 } from '../../store';
 
 export default function Nav() {
@@ -17,7 +17,9 @@ export default function Nav() {
   // Getting dashboard data when nav is loaded
   useEffect(async () => {
     try {
-      if (loggedIn) {
+      // Checking local storage for logged in data
+      const isLoggedIn = await authUser(authDispatch);
+      if (isLoggedIn) {
         await getData(dashboardDispatch, userId);
       } else {
         await getData(dashboardDispatch, 0);
@@ -25,7 +27,7 @@ export default function Nav() {
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [loggedIn]);
 
   const handleLogOutSubmit = async () => {
     try {

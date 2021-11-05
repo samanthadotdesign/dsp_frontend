@@ -225,20 +225,25 @@ export const addUser = (authDispatch, values) => {
   });
 };
 
-export const loginUser = (authDispatch, values) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
-    if (result.data.status === 'OK') {
-      authDispatch({
-        type: ACTIONS.USER_LOGGEDIN,
-        payload: result.data.userId,
-      });
-    }
-  });
-};
+export const loginUser = (authDispatch, values) => axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
+  if (result.data.status === 'OK') {
+    const { data } = result;
+    authDispatch({
+      type: ACTIONS.USER_LOGGEDIN,
+      payload: data.userId,
+    });
+    return data;
+  }
+  return {};
+});
 
 export const logoutUser = (authDispatch) => {
   axios.post(`${REACT_APP_BACKEND_URL}/logout`).then((result) => {
     if (result.data === 'OK') {
+      localStorage.removeItem('userId');
+      localStorage.removeItem('loggedInDate');
+      localStorage.removeItem('loggedIn');
+
       authDispatch({
         type: ACTIONS.USER_LOGOUT,
       });
@@ -246,14 +251,29 @@ export const logoutUser = (authDispatch) => {
   });
 };
 
-// On page load, checks if there is already a cookie/user is logged in
+// On initialization, we check the localStorage if the user is logged in
 export const authUser = (authDispatch) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/auth`).then((result) => {
-    console.log(result);
-    // Expecting result to be true or false depending if cookies exist
-    authDispatch({
-      type: ACTIONS.USER_AUTH,
-      payload: result,
-    });
+  // Get data from localStorage
+  const userId = localStorage.getItem('userId');
+  const loggedInDateTimespamp = localStorage.getItem('loggedInDate');
+  const loggedIn = localStorage.getItem('loggedIn');
+
+  // Define how long we want the session to be valid for
+  const currentDate = new Date();
+  const loggedInDate = new Date(loggedInDateTimespamp * 1000);
+  const differenceInTime = currentDate.getTime() - loggedInDate.getTime();
+
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+
+  if (differenceInDays > 6) {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('loggedInDate');
+    localStorage.removeItem('loggedIn');
+    return false;
+  }
+  authDispatch({
+    type: ACTIONS.USER_AUTH,
+    payload: { userId, loggedIn },
   });
+  return true;
 };

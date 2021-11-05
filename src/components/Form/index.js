@@ -118,7 +118,18 @@ export const LogInForm = () => {
   // Send to database
   const handleLogInSubmit = async (values) => {
     try {
-      await loginUser(authDispatch, values);
+      const response = await loginUser(authDispatch, values);
+      console.log('**** RESPONSE INSIDE LOGIN FORM****');
+
+      const { userId, loggedIn } = response;
+
+      // Set expiration for cookies
+      const loggedInDate = Date.now();
+      // Web storage API to store the cookie information
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('loggedIn', loggedIn);
+      localStorage.setItem('loggedInDate', loggedInDate);
+
       await modalDispatch({ type: ACTIONS.CLOSE_MODALS });
     } catch (error) {
       console.log(error);
