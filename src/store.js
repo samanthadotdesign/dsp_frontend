@@ -173,30 +173,6 @@ export const getData = (dashboardDispatch, userId) => {
   });
 };
 
-// Get all categories for a particular section id
-export const getSectionData = (dashboardDispatch, skills, sectionId, userId) => {
-  axios.get(`${REACT_APP_BACKEND_URL}/section/${sectionId}/${userId}`).then((result) => {
-    console.log('**** SECTION DATA INSIDE STORE ****', result.data);
-    // const { categoryIds, skillIdsCompleted } = result.data;
-
-    // Get all the skills for each section
-    // const skillsInCategories = skills.filter((skill) => categoryIds.includes(skill.categoryId));
-
-    // const temporalSectionSkills = new Array(skillsInCategories.length).fill(false);
-
-    // dashboardDispatch({
-    //   type: ACTIONS.GET_USER_DATA,
-    // payload: {
-    //   // Set skill ids completed so we can set it inside the skill boolean
-    //   skillIdsCompleted,
-    //   // Setting the conditions for muted/colored
-    //   skillsInCategories,
-    //   // temporalSectionSkills,
-    // },
-    // });
-  });
-};
-
 // Find the resources via skillId and userId
 export const getUserResources = (dashboardDispatch, skillId, userId) => {
   axios.get(`${REACT_APP_BACKEND_URL}/resources/${skillId}/${userId}`).then((result) => {
