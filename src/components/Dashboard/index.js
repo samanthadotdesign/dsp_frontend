@@ -11,22 +11,6 @@ export default function Dashboard() {
     categoriesCompleted,
   } = dashboardStore;
 
-  // Initializes on load all the info from the database
-  useEffect(async () => {
-    try {
-      // If user is logged in, show user's dashboard data
-      if (loggedIn) {
-        await getData(dashboardDispatch, userId);
-      }
-      // If user isn't logged in, show all the dashboard data anyway
-      else {
-        await getData(dashboardDispatch, 1);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [loggedIn]);
-
   return (
     <div>
       {categoriesCompleted && <Category categoriesCompleted={categoriesCompleted} />}

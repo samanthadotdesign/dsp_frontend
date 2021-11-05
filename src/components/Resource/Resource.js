@@ -30,19 +30,20 @@ const useWindowDimensions = () => {
   return windowDimensions;
 };
 
+// skillId,
+// skillName,
+// resourceSkills,
+// setResourceSkills,
+// skillCompletedArr,
+// skillCompleted,
+// setSkillCompleted,
+// categoriesCompleted,
+// setCategoriesCompleted,
+
 // skillCompleted is a boolean describing if the skill is completed or not
 // skillCompletedArr is array of skillIds of completed skills
-export default function Resource({
-  skillId,
-  skillName,
-  resourceSkills,
-  setResourceSkills,
-  skillCompletedArr,
-  skillCompleted,
-  setSkillCompleted,
-  categoriesCompleted,
-  setCategoriesCompleted,
-}) {
+export default function Resource({ skill }) {
+  const { skillName, skillId, isCompleted } = skill;
   const [resourceForm, setResourceForm] = useState(false);
   const [addResourceBtn, setAddResourceBtn] = useState(true);
   const [resourceModalVisible, setResourceModalVisible] = useState(false);

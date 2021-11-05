@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { getUserResources, getSectionData, GlobalContext } from '../../store';
+import { getUserResources, GlobalContext } from '../../store';
 import Skill from '../Skill';
 import Resource from '../Resource/Resource';
 import { Grid, SectionDiv, HoverResourceDiv } from './styles';
@@ -50,10 +50,16 @@ export default function Section({
         <Grid className="grid">
           {/* Map an array of skill objects into divs */}
           {populatedSkills.map((skill, index) => (
-            <Skill
-              skill={skill}
-              key={`skill-${index}`}
-            />
+            <HoverResourceDiv>
+              <Skill
+                skill={skill}
+                key={`skill-${index}`}
+              />
+              {/* <Resource
+                skill={skill}
+                key={`skill-${index}`}
+              /> */}
+            </HoverResourceDiv>
           ))}
         </Grid>
       </SectionDiv>
