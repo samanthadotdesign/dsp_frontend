@@ -1,35 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
+import { GlobalContext } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
   H2, ResourceDiv, UL, LI, Link,
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
-// Add resource emoji or favicon
-
-// skillId,
-// skillName,
-// resourceSkills,
-// setResourceSkills,
-// skillCompletedArr,
-// skillCompleted,
-// setSkillCompleted,
-// categoriesCompleted,
-// setCategoriesCompleted,
-
-// skillCompleted is a boolean describing if the skill is completed or not
-// skillCompletedArr is array of skillIds of completed skills
-
 export default function Resource({ skill }) {
-  // const { skillName, skillId, isCompleted } = skill;
-  // const [resourceForm, setResourceForm] = useState(false);
-  // const [addResourceBtn, setAddResourceBtn] = useState(true);
-  // const [resourceModalVisible, setResourceModalVisible] = useState(false);
+  const { id: skillId, skillName, isCompleted } = skill;
+  const { dashboardDispatch, dashboardStore } = useContext(GlobalContext);
+  const { resources } = dashboardStore;
 
-  // const resourcesForSkillId = resourceSkills[skillId];
+  const [resourceForm, setResourceForm] = useState(false);
+  const [addResourceBtn, setAddResourceBtn] = useState(true);
+  const [resourceModalVisible, setResourceModalVisible] = useState(false);
 
-  // const { height, width } = useWindowDimensions();
-  // const showModalView = (width < 550);
+  // resourcesForSkillId is an array of objects [{ name: ... link: ...}, {}]
+  const resourcesForSkillId = resources[skillId];
 
   // const handleClick = () => {
   //   axios.put('/skill', { skillId, skillCompleted }).then((result) => {

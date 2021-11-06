@@ -196,7 +196,6 @@ export const getData = (dashboardDispatch, userId) => {
 // Find the resources via skillId and userId
 export const getUserResources = (dashboardDispatch, skillId, userId) => {
   axios.get(`${REACT_APP_BACKEND_URL}/resources/${skillId}/${userId}`).then((result) => {
-    console.log('GET USER RESOURCES FROM STORE', result.data);
     dashboardDispatch({
       type: ACTIONS.GET_USER_RESOURCES,
       payload: result.data,
@@ -281,8 +280,6 @@ export const handleWindowDimensions = (windowDispatch) => {
   // On initial load, set the window width and height
   const { innerWidth: width, innerHeight: height } = window;
   const isMobile = (width < 550);
-  console.log('**** IS MOBILE *****');
-  console.log(isMobile);
   windowDispatch({
     type: ACTIONS.GET_WINDOW_DIMENSIONS,
     payload: {

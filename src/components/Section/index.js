@@ -35,8 +35,11 @@ export default function Section({
     if (condition) {
       return { ...skill, isCompleted: true };
     }
-    return skill;
+    return { ...skill, isCompleted: false };
   });
+
+  console.log('*** populated skills*****');
+  console.log(populatedSkills);
 
   const handlePointerOver = (index, bool) => {
     setSkillsHoverState(bool ? index : undefined);
@@ -55,6 +58,7 @@ export default function Section({
               () => handlePointerOver(index, true)
 }
               onPointerLeave={() => handlePointerOver(index, false)}
+              key={`hover-skill-${index}`}
             >
               <Skill
                 skill={skill}

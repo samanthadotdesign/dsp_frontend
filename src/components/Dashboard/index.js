@@ -1,11 +1,10 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { GlobalContext } from '../../store';
 import Section from '../Section';
 import Category from '../Category';
 
 export default function Dashboard() {
-  const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
-  const { loggedIn, userId } = authStore;
+  const { dashboardStore } = useContext(GlobalContext);
   const {
     sections,
     categoriesCompleted,
