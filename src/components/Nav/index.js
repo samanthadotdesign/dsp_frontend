@@ -4,19 +4,20 @@ import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
 import {
-  logoutUser, GlobalContext, ACTIONS, getData, authUser,
+  logoutUser, GlobalContext, ACTIONS, getData, authUser, handleWindowDimensions,
 } from '../../store';
 
 export default function Nav() {
   // Pass in "loggedIn" and use it to conditionally render buttons using ternary statement
   const {
-    dashboardDispatch, authStore, authDispatch, modalDispatch,
+    dashboardDispatch, authStore, authDispatch, modalDispatch, windowDispatch,
   } = useContext(GlobalContext);
   const { loggedIn, userId } = authStore;
 
   // Getting dashboard data when nav is loaded
   useEffect(async () => {
     try {
+      const windowDimensions = await handleWindowDimensions(windowDispatch);
       // Checking local storage for logged in data
       const isLoggedIn = await authUser(authDispatch);
       if (isLoggedIn) {

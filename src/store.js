@@ -3,6 +3,8 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 export const ACTIONS = {
+  GET_WINDOW_DIMENSIONS: 'Get window dimensions for the browser',
+
   GET_DATA: 'Get all initial data to show dashboard',
   GET_USER_DATA: 'Get all skills and categories for user',
   GET_USER_RESOURCES: 'Get all the resources that belong to user',
@@ -22,6 +24,12 @@ export const ACTIONS = {
 };
 
 // Initial store states
+const initialWindowState = {
+  width: 0,
+  height: 0,
+  showMobileView: false,
+};
+
 const initialState = {
   sections: [],
   categories: [],
@@ -128,6 +136,15 @@ const modalReducer = (state, action) => {
   }
 };
 
+const windowReducer = (state, action) => {
+  switch (action.type) {
+    case ACTIONS.GET_WINDOW_DIMENSIONS:
+      return { ...action.payload };
+    default:
+      return state;
+  }
+};
+
 // Global Provider for entire application
 const { Provider } = GlobalContext;
 
@@ -135,6 +152,7 @@ export const GlobalProvider = ({ children }) => {
   const [dashboardStore, dashboardDispatch] = useReducer(dashboardReducer, initialState);
   const [authStore, authDispatch] = useReducer(authReducer, initialAuthState);
   const [modalStore, modalDispatch] = useReducer(modalReducer, initialModalState);
+  const [windowStore, windowDispatch] = useReducer(windowReducer, initialWindowState);
 
   return (
     <Provider
@@ -145,6 +163,8 @@ export const GlobalProvider = ({ children }) => {
         authDispatch,
         modalStore,
         modalDispatch,
+        windowStore,
+        windowDispatch,
       }}
     >
       {children}
@@ -185,7 +205,7 @@ export const getUserResources = (dashboardDispatch, skillId, userId) => {
 };
 
 /** ***************** */
-/** AUTHENTICATION * */
+/** AUTHENTICATION ** */
 /** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
@@ -253,3 +273,33 @@ export const authUser = (authDispatch) => {
   });
   return true;
 };
+
+/** ***************** */
+/** **** WINDOW ***** */
+/** ***************** */
+export const handleWindowDimensions = (windowDispatch) => {
+  // On initial load, set the window width and height
+  const { innerWidth: width, innerHeight: height } = window;
+  const isMobile = (width < 550);
+  console.log('**** IS MOBILE *****');
+  console.log(isMobile);
+  windowDispatch({
+    type: ACTIONS.GET_WINDOW_DIMENSIONS,
+    payload: {
+      width,
+      height,
+      showMobileView: isMobile,
+    },
+  });
+  return { width, height };
+};
+
+// Handle resize after page has loaded
+// useEffect(() => {
+//     const handleResize = () => {
+//       setWindowDimensions(getWindowDimensions());
+//     };
+
+//     window.addEventListener('resize', handleResize);
+//     return () => window.removeEventListener('resize', handleResize);
+//   }, []);

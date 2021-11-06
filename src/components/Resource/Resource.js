@@ -1,5 +1,4 @@
-import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ResourceForm from './ResourceForm';
 import {
   H2, ResourceDiv, UL, LI, Link,
@@ -7,28 +6,6 @@ import {
 import { SecondaryButton } from '../../styles';
 
 // Add resource emoji or favicon
-
-// Help to create modals for resource divs when in mobile view
-const getWindowDimensions = () => {
-  const { innerWidth: width, innerHeight: height } = window;
-  return { width, height };
-};
-
-const useWindowDimensions = () => {
-  const initialDimensions = getWindowDimensions();
-  const [windowDimensions, setWindowDimensions] = useState(initialDimensions);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowDimensions(getWindowDimensions());
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return windowDimensions;
-};
 
 // skillId,
 // skillName,
@@ -42,6 +19,7 @@ const useWindowDimensions = () => {
 
 // skillCompleted is a boolean describing if the skill is completed or not
 // skillCompletedArr is array of skillIds of completed skills
+
 export default function Resource({ skill }) {
   // const { skillName, skillId, isCompleted } = skill;
   // const [resourceForm, setResourceForm] = useState(false);
