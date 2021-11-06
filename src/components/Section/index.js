@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { boolean } from 'yup/lib/locale';
 import { getUserResources, GlobalContext } from '../../store';
 import Skill from '../Skill';
 import Resource from '../Resource/Resource';
@@ -12,6 +13,9 @@ export default function Section({
 }) {
   const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
   const { categories, skillIdsCompleted, skills } = dashboardStore;
+
+  // On initial load, skillsHoverStsate is undefined
+  const [skillsHoverState, setSkillsHoverState] = useState();
 
   // On load, print all the skills for each section
   // section -> category (sectionId) -> skill
@@ -34,13 +38,9 @@ export default function Section({
     return skill;
   });
 
-  // const handlePointerOver = (index) => {
-  //   const tempArray = [...new Array(sectionSkills.length).fill(false)];
-  //   tempArray[index] = true;
-  //   console.log('*** TEMP ARRAY*** ');
-  //   console.log(tempArray);
-  //   setSkillsHoverState(tempArray);
-  // };
+  const handlePointerOver = (index, bool) => {
+    setSkillsHoverState(bool ? index : undefined);
+  };
 
   return (
     <>
@@ -50,15 +50,22 @@ export default function Section({
         <Grid className="grid">
           {/* Map an array of skill objects into divs */}
           {populatedSkills.map((skill, index) => (
-            <HoverResourceDiv>
+            <HoverResourceDiv
+              onPointerOver={
+              () => handlePointerOver(index, true)
+}
+              onPointerLeave={() => handlePointerOver(index, false)}
+            >
               <Skill
                 skill={skill}
                 key={`skill-${index}`}
               />
-              {/* <Resource
-                skill={skill}
-                key={`skill-${index}`}
-              /> */}
+              {skillsHoverState == index ? (
+                <Resource
+                  skill={skill}
+                  key={`resource-${index}`}
+                />
+              ) : null}
             </HoverResourceDiv>
           ))}
         </Grid>

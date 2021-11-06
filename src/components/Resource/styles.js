@@ -13,7 +13,6 @@ export const H2 = styled.h2`
 `;
 
 export const ResourceDiv = styled.div`
-  visibility: hidden;
   padding: 14px;
   font-size: 14px;
   background-color: #fff;

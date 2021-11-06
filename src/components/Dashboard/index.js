@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { getData, GlobalContext } from '../../store';
+import { GlobalContext } from '../../store';
 import Section from '../Section';
 import Category from '../Category';
 

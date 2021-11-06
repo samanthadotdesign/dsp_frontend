@@ -33,8 +33,4 @@ export const SectionDiv = styled.div`
 
 export const HoverResourceDiv = styled.div`
   position: relative;
-
-  &:hover ${ResourceDiv} {
-    visibility: visible;
-  }
 `;
