@@ -13,7 +13,7 @@ export default function Section({
 }) {
   const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
   const { categories, skillIdsCompleted, skills } = dashboardStore;
-
+  const [populatedSkills, setPopulatedSkills] = useState([]);
   // On initial load, skillsHoverStsate is undefined
   const [skillsHoverState, setSkillsHoverState] = useState();
 
@@ -29,17 +29,17 @@ export default function Section({
     return singleSkillInCategory;
   });
 
-  // Color skills that are completed
-  const populatedSkills = skillsInSection.map((skill) => {
-    const condition = skillIdsCompleted.find((skillId) => skillId === skill.id);
-    if (condition) {
-      return { ...skill, isCompleted: true };
-    }
-    return { ...skill, isCompleted: false };
-  });
-
-  console.log('*** populated skills*****');
-  console.log(populatedSkills);
+  // Color skills that are completed, refresh when skill have been added
+  useEffect(() => {
+    const coloredSkills = skillsInSection.map((skill) => {
+      const condition = skillIdsCompleted.find((skillId) => skillId === skill.id);
+      if (condition) {
+        return { ...skill, isCompleted: true };
+      }
+      return { ...skill, isCompleted: false };
+    });
+    setPopulatedSkills(coloredSkills);
+  }, [skillIdsCompleted]);
 
   const handlePointerOver = (index, bool) => {
     setSkillsHoverState(bool ? index : undefined);

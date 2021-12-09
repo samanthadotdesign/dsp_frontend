@@ -61,7 +61,7 @@ const dashboardReducer = (state, action) => {
     case ACTIONS.GET_USER_DATA:
       return {
         ...state,
-        skillsCompleted: action.payload.skillIdsCompleted,
+        skillsIdsCompleted: action.payload.skillIdsCompleted,
         skillsInCategories: action.payload.skillsInCategories,
       };
     case ACTIONS.GET_USER_RESOURCES:
@@ -72,7 +72,7 @@ const dashboardReducer = (state, action) => {
     case ACTIONS.COMPLETE_SKILL:
       return {
         ...state,
-        skillsCompleted: action.payload,
+        skillIdsCompleted: action.payload,
       };
     // case ACTIONS.COMPLETE_CATEGORY:
     //   return state;

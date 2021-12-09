@@ -16,29 +16,22 @@ export default function Resource({ skill }) {
 
   const [resourceForm, setResourceForm] = useState(false);
   const [addResourceBtn, setAddResourceBtn] = useState(true);
-  const [skillCompleted, setSkillCompleted] = useState(false);
   const [resourceModalVisible, setResourceModalVisible] = useState(false);
 
   // resourcesForSkillId is an array of objects [{ name: ... link: ...}, {}]
   const resourcesForSkillId = resources[skillId];
 
-  const checkSkillCompleted = () => skillIdsCompleted.includes(skillId);
+  const isSkillCompleted = () => skillIdsCompleted.includes(skillId);
 
   const handleSkillCompleted = () => {
     // If user is logged in, add the skill to the user's account
     if (loggedIn) {
-      addNewSkill(dashboardDispatch, skillId, userId, skillCompleted);
+      addNewSkill(dashboardDispatch, skillId, userId, isSkillCompleted());
     } else {
       // If user is not logged in, show login modal
       modalDispatch({ type: ACTIONS.LOGIN_MODAL });
     }
   };
-
-  useEffect(() => {
-    const response = checkSkillCompleted();
-
-    setSkillCompleted(response);
-  }, [skillIdsCompleted]);
 
   //   axios.put('/skill', { skillId, skillCompleted }).then((result) => {
   //     const { currentCategoryId, currentCategory, categoryIsComplete } = result.data;
@@ -125,7 +118,7 @@ export default function Resource({ skill }) {
       )}
 
       <SecondaryButton onClick={handleSkillCompleted}>
-        {skillCompleted ? 'Uncomplete Skill' : 'Complete Skill'}
+        {isSkillCompleted() ? 'Uncomplete Skill' : 'Complete Skill'}
       </SecondaryButton>
     </ResourceDiv>
 
