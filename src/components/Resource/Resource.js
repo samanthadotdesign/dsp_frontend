@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { GlobalContext, addNewSkill } from '../../store';
+import React, { useState, useContext, useEffect } from 'react';
+import { GlobalContext, addNewSkill, ACTIONS } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
   H2, ResourceDiv, UL, LI, Link,
@@ -8,32 +8,38 @@ import { SecondaryButton } from '../../styles';
 
 export default function Resource({ skill }) {
   const { id: skillId, skillName, isCompleted } = skill;
-  const { dashboardDispatch, dashboardStore, authStore } = useContext(GlobalContext);
+  const {
+    dashboardDispatch, dashboardStore, authStore, modalDispatch,
+  } = useContext(GlobalContext);
   const { resources, skillIdsCompleted } = dashboardStore;
   const { userId, loggedIn } = authStore;
 
   const [resourceForm, setResourceForm] = useState(false);
   const [addResourceBtn, setAddResourceBtn] = useState(true);
+  const [skillCompleted, setSkillCompleted] = useState(false);
   const [resourceModalVisible, setResourceModalVisible] = useState(false);
 
   // resourcesForSkillId is an array of objects [{ name: ... link: ...}, {}]
   const resourcesForSkillId = resources[skillId];
 
+  const checkSkillCompleted = () => skillIdsCompleted.includes(skillId);
+
   const handleSkillCompleted = () => {
     // If user is logged in, add the skill to the user's account
     if (loggedIn) {
-      addNewSkill(dashboardDispatch, userId, skillId);
-
-      //  If the skill is already completed before handle click, the user is clicking to "uncomplete" the skill
-      if (skillIdsCompleted.includes(skillId)) {
-        console.log('skill id');
-      }
-    }
-    // Else show the modal for user to sign up
-    else {
-      console.log('user needs to sign up');
+      console.log('Add new skill to my database');
+      addNewSkill(dashboardDispatch, userId, skillId, skillCompleted);
+    } else {
+      // If user is not logged in, show login modal
+      modalDispatch({ type: ACTIONS.LOGIN_MODAL });
     }
   };
+
+  useEffect(() => {
+    const response = checkSkillCompleted();
+
+    setSkillCompleted(response);
+  }, [skillIdsCompleted]);
 
   //   axios.put('/skill', { skillId, skillCompleted }).then((result) => {
   //     const { currentCategoryId, currentCategory, categoryIsComplete } = result.data;
@@ -92,8 +98,8 @@ export default function Resource({ skill }) {
     >
       <H2>{skillName}</H2>
       <UL>
-        {resourcesForSkillId && resourcesForSkillId.map((resource) => (
-          <LI>
+        {resourcesForSkillId && resourcesForSkillId.map((resource, index) => (
+          <LI key={`resource-${index}`}>
             <Link href={resource.link} target="_blank">
               {resource.name}
             </Link>
@@ -113,15 +119,13 @@ export default function Resource({ skill }) {
       {addResourceBtn && (
         <SecondaryButton
           type="button"
-          onClick={handleShowForm}
+          // onClick={handleShowForm}
         >
           Add Resource
         </SecondaryButton>
       )}
 
-      <SecondaryButton
-        onClick={handleSkillCompleted}
-      >
+      <SecondaryButton onClick={handleSkillCompleted}>
         {skillCompleted ? 'Uncomplete Skill' : 'Complete Skill'}
       </SecondaryButton>
     </ResourceDiv>

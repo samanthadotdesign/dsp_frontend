@@ -203,8 +203,8 @@ export const getUserResources = (dashboardDispatch, skillId, userId) => {
   });
 };
 
-export const addNewSkill = (dashboardDispatch, skillId, userId) => {
-  axios.get(`${REACT_APP_BACKEND_URL}/skill/${skillId}/${userId}`).then((result) => {
+export const addNewSkill = (dashboardDispatch, skillId, userId, skillCompleted) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/skill/${skillId}`, { userId, skillCompleted }).then((result) => {
     dashboardDispatch({
       type: ACTIONS.COMPLETE_SKILL,
       payload: result.data,
