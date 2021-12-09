@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
+import { GlobalContext } from '../../store';
 import { Badges } from './styles';
 
 const sketch = (p5, categoriesCompleted) => {
@@ -59,7 +60,9 @@ const sketch = (p5, categoriesCompleted) => {
 };
 
 // categoriesCompleted is an array of completed category objects for that user
-export default function Category({ categoriesCompleted }) {
+export default function Category() {
+  const { dashboardStore } = useContext(GlobalContext);
+  const { categoriesCompleted } = dashboardStore;
   return (
     <>
       <Badges>

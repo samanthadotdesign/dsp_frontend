@@ -25,7 +25,9 @@ export default function Section({
   // array of skills in the section
   const skillsInSection = skills.filter((skill) => {
     const { categoryId } = skill;
-    const singleSkillInCategory = categoriesInSection.find((category) => category.id === categoryId);
+    const singleSkillInCategory = categoriesInSection.find(
+      (category) => category.id === categoryId,
+    );
     return singleSkillInCategory;
   });
 
@@ -56,7 +58,7 @@ export default function Section({
             <HoverResourceDiv
               onPointerOver={
               () => handlePointerOver(index, true)
-}
+              }
               onPointerLeave={() => handlePointerOver(index, false)}
               key={`hover-skill-${index}`}
             >

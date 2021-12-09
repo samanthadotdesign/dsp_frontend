@@ -35,7 +35,8 @@ const initialState = {
   categories: [],
   skills: [],
   resources: [],
-  categoryIdsCompleted: [], // categoryIds completed so I can render the stickers
+  // categoryIdsCompleted: [], // categoryIds completed
+  categoriesCompleted: [], // need the entire object for a completed category to render stickers
   skillIdsCompleted: [], // skillIds completed
 };
 
@@ -74,8 +75,11 @@ const dashboardReducer = (state, action) => {
         ...state,
         skillIdsCompleted: action.payload,
       };
-    // case ACTIONS.COMPLETE_CATEGORY:
-    //   return state;
+    case ACTIONS.COMPLETE_CATEGORY:
+      return {
+        ...state,
+        categoriesCompleted: action.payload,
+      };
     default:
       return state;
   }
