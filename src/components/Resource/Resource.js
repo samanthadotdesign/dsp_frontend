@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { GlobalContext } from '../../store';
+import { GlobalContext, addNewSkill } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
   H2, ResourceDiv, UL, LI, Link,
@@ -8,8 +8,9 @@ import { SecondaryButton } from '../../styles';
 
 export default function Resource({ skill }) {
   const { id: skillId, skillName, isCompleted } = skill;
-  const { dashboardDispatch, dashboardStore } = useContext(GlobalContext);
-  const { resources } = dashboardStore;
+  const { dashboardDispatch, dashboardStore, authStore } = useContext(GlobalContext);
+  const { resources, skillIdsCompleted } = dashboardStore;
+  const { userId, loggedIn } = authStore;
 
   const [resourceForm, setResourceForm] = useState(false);
   const [addResourceBtn, setAddResourceBtn] = useState(true);
@@ -18,12 +19,27 @@ export default function Resource({ skill }) {
   // resourcesForSkillId is an array of objects [{ name: ... link: ...}, {}]
   const resourcesForSkillId = resources[skillId];
 
-  // const handleClick = () => {
+  const handleSkillCompleted = () => {
+    // If user is logged in, add the skill to the user's account
+    if (loggedIn) {
+      addNewSkill(dashboardDispatch, userId, skillId);
+
+      //  If the skill is already completed before handle click, the user is clicking to "uncomplete" the skill
+      if (skillIdsCompleted.includes(skillId)) {
+        console.log('skill id');
+      }
+    }
+    // Else show the modal for user to sign up
+    else {
+      console.log('user needs to sign up');
+    }
+  };
+
   //   axios.put('/skill', { skillId, skillCompleted }).then((result) => {
   //     const { currentCategoryId, currentCategory, categoryIsComplete } = result.data;
 
-  //     /* If the skill is already completed before the handleClick,
-  //     the user is clicking to "uncomplete" the skill */
+  //
+  //      */
   //     if (skillCompleted) {
   //       const skillsArray = skillCompletedArr.filter((id) => id != skillId);
   //       setSkillCompleted(skillsArray);
@@ -74,8 +90,7 @@ export default function Resource({ skill }) {
     <ResourceDiv
       className="resource"
     >
-      <h1>working resource</h1>
-      {/* <H2>{skillName}</H2>
+      <H2>{skillName}</H2>
       <UL>
         {resourcesForSkillId && resourcesForSkillId.map((resource) => (
           <LI>
@@ -89,8 +104,6 @@ export default function Resource({ skill }) {
       {resourceForm
       && (
       <ResourceForm
-        resourceSkills={resourceSkills}
-        setResourceSkills={setResourceSkills}
         skillId={skillId}
         setResourceForm={setResourceForm}
         setAddResourceBtn={setAddResourceBtn}
@@ -107,10 +120,10 @@ export default function Resource({ skill }) {
       )}
 
       <SecondaryButton
-        onClick={handleClick}
+        onClick={handleSkillCompleted}
       >
         {skillCompleted ? 'Uncomplete Skill' : 'Complete Skill'}
-      </SecondaryButton> */}
+      </SecondaryButton>
     </ResourceDiv>
 
   );
