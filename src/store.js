@@ -70,7 +70,10 @@ const dashboardReducer = (state, action) => {
         resourceSkills: action.payload,
       };
     case ACTIONS.COMPLETE_SKILL:
-      return state;
+      return {
+        ...state,
+        skillsCompleted: action.payload,
+      };
     // case ACTIONS.COMPLETE_CATEGORY:
     //   return state;
     default:
@@ -205,9 +208,10 @@ export const getUserResources = (dashboardDispatch, skillId, userId) => {
 
 export const addNewSkill = (dashboardDispatch, skillId, userId, skillCompleted) => {
   axios.post(`${REACT_APP_BACKEND_URL}/skill/${skillId}`, { userId, skillCompleted }).then((result) => {
+    const { updatedSkillIds } = result.data;
     dashboardDispatch({
       type: ACTIONS.COMPLETE_SKILL,
-      payload: result.data,
+      payload: updatedSkillIds,
     });
   });
 };

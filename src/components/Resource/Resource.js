@@ -27,8 +27,7 @@ export default function Resource({ skill }) {
   const handleSkillCompleted = () => {
     // If user is logged in, add the skill to the user's account
     if (loggedIn) {
-      console.log('Add new skill to my database');
-      addNewSkill(dashboardDispatch, userId, skillId, skillCompleted);
+      addNewSkill(dashboardDispatch, skillId, userId, skillCompleted);
     } else {
       // If user is not logged in, show login modal
       modalDispatch({ type: ACTIONS.LOGIN_MODAL });
