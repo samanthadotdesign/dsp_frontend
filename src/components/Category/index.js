@@ -63,6 +63,7 @@ const sketch = (p5, categoriesCompleted) => {
 export default function Category() {
   const { dashboardStore } = useContext(GlobalContext);
   const { categoriesCompleted } = dashboardStore;
+
   return (
     <>
       <Badges>

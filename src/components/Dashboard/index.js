@@ -12,7 +12,11 @@ export default function Dashboard() {
 
   return (
     <div>
-      {categoriesCompleted && <Category />}
+      {categoriesCompleted && categoriesCompleted.map((categoryCompleted, index) => (
+        <Category
+          key={`category-${index}`}
+        />
+      ))}
 
       {sections && sections.map((section, index) => (
         <Section
