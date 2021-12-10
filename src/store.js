@@ -35,7 +35,6 @@ const initialState = {
   categories: [],
   skills: [],
   resources: [],
-  // categoryIdsCompleted: [], // categoryIds completed
   categoriesCompleted: [], // need the entire object for a completed category to render stickers
   skillIdsCompleted: [], // skillIds completed
 };

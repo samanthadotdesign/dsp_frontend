@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ReactP5Wrapper } from 'react-p5-wrapper';
 import { GlobalContext } from '../../store';
 import { Badges } from './styles';
@@ -9,16 +9,16 @@ const sketch = (p5, categoriesCompleted) => {
 
   // Preload each image and then include it into the badges array
   p5.preload = () => {
-    for (let i = 0; i < categoriesCompleted.length; i += 1) {
-      const img = p5.loadImage(categoriesCompleted[i].categoryImg);
+    categoriesCompleted.forEach((item, index) => {
+      // loadImage takes success and fail callback functions
+      const img = p5.loadImage(`${item.categoryImg}`, (success) => {
+        console.log('SUCCESSFULLY LOADED IMAGE ', index);
+      }, (error) => {
+        console.log('ERROR WHILE LOADOING IMAGE ', index, error);
+      });
       badges.push(img);
-    }
+    });
   };
-
-  let xPosition;
-  let yPosition;
-  let xSpeed;
-  let ySpeed;
 
   p5.setup = () => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -40,6 +40,7 @@ const sketch = (p5, categoriesCompleted) => {
   // Redraw on canvas every single second
   p5.draw = () => {
     p5.clear();
+    // p5.image(badges[0].image, badges[0].xPosition, badges[0].yPosition);
 
     // Displays each image on the screen
     if (badges.length > 0) {
@@ -64,9 +65,13 @@ export default function Category() {
   const { dashboardStore } = useContext(GlobalContext);
   const { categoriesCompleted } = dashboardStore;
 
+  useEffect(() => {
+    console.log('******** CATEGORIES UPDATED ***********', categoriesCompleted);
+  }, [categoriesCompleted]);
+
   return (
     <>
-      <Badges>
+      <Badges key={categoriesCompleted.length}>
         <ReactP5Wrapper sketch={(p5) => { sketch(p5, categoriesCompleted); }} />
       </Badges>
     </>

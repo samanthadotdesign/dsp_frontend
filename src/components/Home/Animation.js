@@ -15,11 +15,6 @@ const sketch = (p5) => {
     badges = [figma, heart, collect];
   };
 
-  let xPosition;
-  let yPosition;
-  let xSpeed;
-  let ySpeed;
-
   p5.setup = () => {
     p5.createCanvas(p5.windowWidth, p5.windowHeight);
 

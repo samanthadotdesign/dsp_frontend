@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { GlobalStyle, P } from '../../styles';
 import { Section, Em } from './styles';
 import { Animation } from './Animation';
+import { GlobalContext } from '../../store';
 
 export default function Home() {
+  const { authStore } = useContext(GlobalContext);
+  const { loggedIn } = authStore;
+
   return (
     <>
       <GlobalStyle />
-      <Animation />
+      {!loggedIn && <Animation />}
+
       <Section>
         <P>
           <Em>Designer Starter Pack</Em>
