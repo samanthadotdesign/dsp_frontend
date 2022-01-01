@@ -93,6 +93,10 @@ export default function Resource({ skill }) {
         {resourcesForSkillId && resourcesForSkillId.map((resource, index) => (
           <LI key={`resource-${index}`}>
             <Link href={resource.link} target="_blank">
+              <img
+                alt={resource.name}
+                src={`https://s2.googleusercontent.com/s2/favicons?domain=${resource.link}`}
+              />
               {resource.name}
             </Link>
           </LI>

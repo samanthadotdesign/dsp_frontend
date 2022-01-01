@@ -209,12 +209,17 @@ export const getUserResources = (dashboardDispatch, skillId, userId) => {
   });
 };
 
+// Replaces array of skillIds & array of category objects every time
 export const addNewSkill = (dashboardDispatch, skillId, userId, skillCompleted) => {
   axios.post(`${REACT_APP_BACKEND_URL}/skill/${skillId}`, { userId, skillCompleted }).then((result) => {
-    const { updatedSkillIds } = result.data;
+    const { updatedSkillIds, categoriesCompleted } = result.data;
     dashboardDispatch({
       type: ACTIONS.COMPLETE_SKILL,
       payload: updatedSkillIds,
+    });
+    dashboardDispatch({
+      type: ACTIONS.COMPLETE_CATEGORY,
+      payload: categoriesCompleted,
     });
   });
 };

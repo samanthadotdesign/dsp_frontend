@@ -65,10 +65,6 @@ export default function Category() {
   const { dashboardStore } = useContext(GlobalContext);
   const { categoriesCompleted } = dashboardStore;
 
-  useEffect(() => {
-    console.log('******** CATEGORIES UPDATED ***********', categoriesCompleted);
-  }, [categoriesCompleted]);
-
   return (
     <>
       <Badges key={categoriesCompleted.length}>

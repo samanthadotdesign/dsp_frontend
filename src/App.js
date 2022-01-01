@@ -1,4 +1,7 @@
 import React from 'react';
+import {
+  BrowserRouter as Router, Routes, Route,
+} from 'react-router-dom';
 import { GlobalStyle } from './styles';
 import { GlobalProvider } from './store';
 import Dashboard from './components/Dashboard';
@@ -8,14 +11,16 @@ import Modal from './components/Modal';
 
 export default function App() {
   return (
-    <>
+    <Router>
       <GlobalProvider>
         <GlobalStyle />
         <Nav />
         <Modal />
-        <Dashboard />
-        <Home />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/about" element={<Home />} />
+        </Routes>
       </GlobalProvider>
-    </>
+    </Router>
   );
 }

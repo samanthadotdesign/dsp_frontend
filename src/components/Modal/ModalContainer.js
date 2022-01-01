@@ -1,14 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import {
   BG, Modal, CloseDiv, Span,
 } from './styles';
 import { ACTIONS, GlobalContext } from '../../store';
+import useOnClickOutside from '../../utils/useOnClickOutside';
 
 const ModalComponent = ({ children }) => {
   const { modalDispatch } = useContext(GlobalContext);
   const toggleClose = () => {
     modalDispatch({ type: ACTIONS.CLOSE_MODALS });
   };
+
+  // Toggling modal on close by clicking background
+  // Bind ref to the modal that we want to close
+  const ref = useRef();
+  useOnClickOutside(ref, () => {
+    toggleClose();
+  });
 
   const Close = () => (
     <CloseDiv>
@@ -17,13 +25,12 @@ const ModalComponent = ({ children }) => {
   );
 
   return (
-    <>
-      <BG onClick={toggleClose} />
-      <Modal>
+    <BG>
+      <Modal ref={ref}>
         <Close />
         {children}
       </Modal>
-    </>
+    </BG>
   );
 };
 

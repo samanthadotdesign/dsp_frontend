@@ -30,9 +30,6 @@ export default function ResourceForm({
     link: Yup.string().required(' Add a link to remember'),
   });
 
-  console.log('******* DEFAULT RESOURCE SKILLS');
-  console.log(resourceSkills);
-
   const handleAddResource = (values) => {
     const { title, link } = values;
     console.log('****** inside handle add resource');

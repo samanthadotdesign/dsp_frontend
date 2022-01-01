@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import logo from './logo.svg';
 import {
   Button, NavBar, NavLinks, Logo,
@@ -51,11 +52,18 @@ export default function Nav() {
   return (
     <>
       <NavBar>
-        <a aria-label="nav" href="/"><Logo src={logo} /></a>
+        <Link
+          aria-label="nav"
+          to="/"
+        >
+          <Logo src={logo} />
+        </Link>
         <NavLinks>
-          <Button type="button">
-            About
-          </Button>
+          <Link to="/about">
+            <Button type="button">
+              About
+            </Button>
+          </Link>
           {!loggedIn
         && (
         <Button
