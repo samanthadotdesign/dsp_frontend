@@ -121,7 +121,7 @@ export const Textarea = styled.textarea`
   resize: none;
 
   &:focus {
-    border-color: #000;
+    border-color: ${dark};
   }
 
   @media (max-width: 700px) {
@@ -145,12 +145,12 @@ export const ButtonLink = styled.button`
   background-color: transparent;
   cursor: pointer;
   transition: color 0.5s ease;
-  color: #000;
+  color: ${dark};
   font-family: 'Atkinson Regular';
   font-size: 16px;
 
   &:hover {
-    color: #ccc;
+    color: ${gray};
   }
 `;
 
@@ -169,4 +169,17 @@ export const H1 = styled.h1`
   font-family: 'Atkinson Bold';
   font-size: 32px;
   margin-bottom: 16px;
+`;
+
+export const TextLink = styled.a`
+  font-family: 'Atkinson Bold';
+  font-size: 16px;
+  text-decoration: none;
+  color: ${dark};
+  transition: color 0.5s ease;
+  cursor: pointer; 
+
+  &:hover {
+    color: ${gray};
+  }
 `;
