@@ -5,7 +5,13 @@ import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
 import {
-  logoutUser, GlobalContext, ACTIONS, getData, authUser, handleWindowDimensions, handleTouchCapabilities,
+  logoutUser,
+  GlobalContext,
+  ACTIONS,
+  getData,
+  authUser,
+  handleWindowDimensions,
+  handleTouchCapabilities,
 } from '../../store';
 
 export default function Nav() {

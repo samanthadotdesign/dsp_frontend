@@ -4,7 +4,7 @@ import React, {
 import { GlobalContext, addNewSkill, ACTIONS } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
-  H2, ResourceDiv, UL, LI, Link,
+  Favicon, H2, ResourceDiv, UL, LI, Link,
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
@@ -56,6 +56,7 @@ export default function Resource({ index, skill, handlePointerOver }) {
           <LI key={`resource-${index}`}>
             <Link href={resource.link} target="_blank">
               <img
+                style={{ marginRight: '6px' }}
                 alt={resource.name}
                 src={`https://s2.googleusercontent.com/s2/favicons?domain=${resource.link}`}
               />

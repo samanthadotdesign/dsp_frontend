@@ -88,6 +88,5 @@ export const ResourceInput = styled(Input)`
 `;
 
 export const Favicon = styled.div`
-  height: 20px;
-  width: 20px;
+  margin-right: 8px;
 `;

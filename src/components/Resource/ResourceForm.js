@@ -58,12 +58,12 @@ export default function ResourceForm({
       >
         {() => (
           <Form>
-            <H2>Add Resources To Your List</H2>
+            <H2>Add to Resources</H2>
             <InputComponent name="title" type="text" label="Title" autoComplete="off" />
             <InputComponent name="link" type="text" label="Link" autoComplete="off" />
             <ButtonFieldset>
               <Submit type="button" onClick={handleCancelForm}>Cancel</Submit>
-              <Submit type="submit">Submit</Submit>
+              <Submit type="button">Submit</Submit>
             </ButtonFieldset>
           </Form>
         )}

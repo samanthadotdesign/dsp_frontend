@@ -42,6 +42,8 @@ export const NavBar = styled.header`
 
   @media screen and (max-width: 550px) {
     padding-top: 48px;
+    padding-bottom: 52px;
+    background-color: #fff;
     height: fit-content;
     width: 100vw;
     flex-direction: column;
