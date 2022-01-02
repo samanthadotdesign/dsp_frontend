@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ResourceDiv } from '../Resource/styles';
 
 export const Grid = styled.div`
   width: 75vw;

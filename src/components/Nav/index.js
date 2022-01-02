@@ -5,7 +5,7 @@ import {
   Button, NavBar, NavLinks, Logo,
 } from './styles';
 import {
-  logoutUser, GlobalContext, ACTIONS, getData, authUser, handleWindowDimensions,
+  logoutUser, GlobalContext, ACTIONS, getData, authUser, handleWindowDimensions, handleTouchCapabilities,
 } from '../../store';
 
 export default function Nav() {
@@ -18,7 +18,8 @@ export default function Nav() {
   // Getting dashboard data when nav is loaded
   useEffect(async () => {
     try {
-      const windowDimensions = await handleWindowDimensions(windowDispatch);
+      await handleWindowDimensions(windowDispatch);
+      await handleTouchCapabilities(windowDispatch);
       // Checking local storage for logged in data
       const isLoggedIn = await authUser(authDispatch);
       if (isLoggedIn) {

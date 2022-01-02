@@ -10,11 +10,13 @@ export default function useOnClickOutside(ref, handler) {
         }
         handler(event);
       };
-      document.addEventListener('mousedown', listener);
-      document.addEventListener('touchstart', listener);
+      document.addEventListener('pointerdown', listener);
+      // document.addEventListener('mousedown', listener);
+      // document.addEventListener('touchstart', listener);
       return () => {
-        document.removeEventListener('mousedown', listener);
-        document.removeEventListener('touchstart', listener);
+        document.removeEventListener('pointerdown', listener);
+        // document.removeEventListener('mousedown', listener);
+        // document.removeEventListener('touchstart', listener);
       };
     },
     // Add ref and handler to effect dependencies

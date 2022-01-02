@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { boolean } from 'yup/lib/locale';
-import { getUserResources, GlobalContext } from '../../store';
-import Skill from '../Skill';
-import Resource from '../Resource/Resource';
-import { Grid, SectionDiv, HoverResourceDiv } from './styles';
+import { GlobalContext } from '../../store';
+import HoverResource from '../Resource/HoverResource';
+import { Grid, SectionDiv } from './styles';
 import { H1 } from '../../styles';
 
 // For each section component, print the skills and its resources
@@ -14,7 +12,9 @@ export default function Section({
   const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
   const { categories, skillIdsCompleted, skills } = dashboardStore;
   const [populatedSkills, setPopulatedSkills] = useState([]);
-  // On initial load, skillsHoverStsate is undefined
+  // On initial load, skillsHoverStsate is undefined,
+  // only 1 skillHoverState can be shown at one time
+  // Toggling between false and index of the hover div we want open
   const [skillsHoverState, setSkillsHoverState] = useState();
 
   // On load, print all the skills for each section
@@ -55,24 +55,12 @@ export default function Section({
         <Grid className="grid">
           {/* Map an array of skill objects into divs */}
           {populatedSkills.map((skill, index) => (
-            <HoverResourceDiv
-              onPointerOver={
-              () => handlePointerOver(index, true)
-              }
-              onPointerLeave={() => handlePointerOver(index, false)}
-              key={`hover-skill-${index}`}
-            >
-              <Skill
-                skill={skill}
-                key={`skill-${index}`}
-              />
-              {skillsHoverState == index ? (
-                <Resource
-                  skill={skill}
-                  key={`resource-${index}`}
-                />
-              ) : null}
-            </HoverResourceDiv>
+            <HoverResource
+              skillsHoverState={skillsHoverState}
+              handlePointerOver={handlePointerOver}
+              skill={skill}
+              index={index}
+            />
           ))}
         </Grid>
       </SectionDiv>

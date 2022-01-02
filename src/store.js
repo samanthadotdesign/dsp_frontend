@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 export const ACTIONS = {
   GET_WINDOW_DIMENSIONS: 'Get window dimensions for the browser',
+  GET_TOUCH_CAPABILITIES: 'Register if window has touch capabilities',
 
   GET_DATA: 'Get all initial data to show dashboard',
   GET_USER_DATA: 'Get all skills and categories for user',
@@ -28,6 +29,7 @@ const initialWindowState = {
   width: 0,
   height: 0,
   showMobileView: false,
+  isTouchDevice: false,
 };
 
 const initialState = {
@@ -163,6 +165,11 @@ const windowReducer = (state, action) => {
   switch (action.type) {
     case ACTIONS.GET_WINDOW_DIMENSIONS:
       return { ...action.payload };
+    case ACTIONS.GET_TOUCH_CAPABILITIES:
+      return {
+        ...state,
+        isTouchDevice: action.payload,
+      };
     default:
       return state;
   }
@@ -343,12 +350,11 @@ export const handleWindowDimensions = (windowDispatch) => {
   return { width, height };
 };
 
-// Handle resize after page has loaded
-// useEffect(() => {
-//     const handleResize = () => {
-//       setWindowDimensions(getWindowDimensions());
-//     };
-
-//     window.addEventListener('resize', handleResize);
-//     return () => window.removeEventListener('resize', handleResize);
-//   }, []);
+export const handleTouchCapabilities = (windowDispatch) => {
+  const isTouchDevice = 'ontouchstart' in window;
+  windowDispatch({
+    type: ACTIONS.GET_TOUCH_CAPABILITIES,
+    payload: isTouchDevice,
+  });
+  return isTouchDevice;
+};

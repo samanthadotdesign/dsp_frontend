@@ -1,4 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, {
+  useState, useContext,
+} from 'react';
 import { GlobalContext, addNewSkill, ACTIONS } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
@@ -6,7 +8,9 @@ import {
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
-export default function Resource({ skill }) {
+export default function Resource({
+  skill, handlePointerOver, index, skillsHoverState,
+}) {
   const { id: skillId, skillName, isCompleted } = skill;
   const {
     dashboardDispatch, dashboardStore, authStore, modalDispatch,
