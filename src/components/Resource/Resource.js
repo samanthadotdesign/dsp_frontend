@@ -8,10 +8,8 @@ import {
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
-export default function Resource({
-  skill, handlePointerOver, index, skillsHoverState,
-}) {
-  const { id: skillId, skillName, isCompleted } = skill;
+export default function Resource({ skill }) {
+  const { id: skillId, skillName } = skill;
   const {
     dashboardDispatch, dashboardStore, authStore, modalDispatch,
   } = useContext(GlobalContext);

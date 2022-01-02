@@ -36,10 +36,7 @@ export default function HoverResource({
       />
       {skillsHoverState == index ? (
         <Resource
-          skillsHoverState={skillsHoverState}
-          handlePointerOver={handlePointerOver}
           skill={skill}
-          index={index}
           key={`resource-${index}`}
         />
       ) : null}
