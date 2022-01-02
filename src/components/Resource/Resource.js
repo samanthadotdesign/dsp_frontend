@@ -8,7 +8,7 @@ import {
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
-export default function Resource({ skill }) {
+export default function Resource({ index, skill, handlePointerOver }) {
   const { id: skillId, skillName } = skill;
   const {
     dashboardDispatch, dashboardStore, authStore, modalDispatch,
@@ -30,14 +30,19 @@ export default function Resource({ skill }) {
       addNewSkill(dashboardDispatch, skillId, userId, isSkillCompleted());
     } else {
       // If user is not logged in, show login modal
+      handlePointerOver(index, false);
       modalDispatch({ type: ACTIONS.LOGIN_MODAL });
     }
   };
 
-  // Add the new inline fields for user to add the resource
   const handleShowForm = () => {
-    setResourceForm(true);
-    setAddResourceBtn(false);
+    // If user is logged in, add the new inline fields for user to add the resource
+    if (loggedIn) {
+      setResourceForm(true);
+      setAddResourceBtn(false);
+    } else {
+      modalDispatch({ type: ACTIONS.LOGIN_MODAL });
+    }
   };
 
   // If skill is complete, the copy is Uncomplete Skill
