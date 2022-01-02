@@ -48,9 +48,7 @@ export default function Resource({ index, skill, handlePointerOver }) {
 
   // If skill is complete, the copy is Uncomplete Skill
   return (
-    <ResourceDiv
-      className="resource"
-    >
+    <ResourceDiv>
       <H2>{skillName}</H2>
       <UL>
         {resourcesForSkillId && resourcesForSkillId.map((resource, index) => (
