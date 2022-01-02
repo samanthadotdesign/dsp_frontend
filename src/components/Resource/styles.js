@@ -24,14 +24,14 @@ export const ResourceDiv = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-20%);
   z-index: 5;
 
   @media screen and (max-width: 550px) {
     width: 90vw;
     position: fixed;
-    top: 30vh;
-    transform: translateX(-50%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     padding: 24px 16px;
     font-size: 16px;
   }
