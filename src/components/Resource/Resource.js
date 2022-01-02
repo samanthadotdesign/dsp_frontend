@@ -4,7 +4,7 @@ import React, {
 import { GlobalContext, addNewSkill, ACTIONS } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
-  Favicon, H2, ResourceDiv, UL, LI, Link,
+  H2, ResourceDiv, UL, LI, Link,
 } from './styles';
 import { SecondaryButton } from '../../styles';
 
@@ -54,13 +54,11 @@ export default function Resource({ index, skill, handlePointerOver }) {
       <H2>{skillName}</H2>
       <UL>
         {resourcesForSkillId && resourcesForSkillId.map((resource, index) => (
-          <LI key={`resource-${index}`}>
+          <LI
+            key={`resource-${index}`}
+            url={`https://s2.googleusercontent.com/s2/favicons?domain=${resource.link}`}
+          >
             <Link href={resource.link} target="_blank">
-              <img
-                style={{ marginRight: '6px' }}
-                alt={resource.name}
-                src={`https://s2.googleusercontent.com/s2/favicons?domain=${resource.link}`}
-              />
               {resource.name}
             </Link>
           </LI>

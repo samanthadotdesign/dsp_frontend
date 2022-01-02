@@ -50,10 +50,8 @@ export const UL = styled.ul`
 
 export const LI = styled.li`
   text-underline: none;
-
-  @media screen and (max-width: 550px) {
-    margin: 8px 0;
-  }
+  background: url(${(props) => props.url}) no-repeat left top;
+  padding: 0 0 8px 22px;
 `;
 
 export const Link = styled.a`
@@ -85,8 +83,4 @@ export const ResourceInput = styled(Input)`
   &:focus {
     border-color: #5552FF;
   }
-`;
-
-export const Favicon = styled.div`
-  margin-right: 8px;
 `;
