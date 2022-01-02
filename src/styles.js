@@ -83,6 +83,7 @@ export const SecondaryButton = styled.button`
 
   @media screen and (max-width: 550px) {
     padding: 8px;
+    font-size: 16px;
   }
 `;
 

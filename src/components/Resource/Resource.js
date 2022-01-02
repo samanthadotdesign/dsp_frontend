@@ -41,6 +41,7 @@ export default function Resource({ index, skill, handlePointerOver }) {
       setResourceForm(true);
       setAddResourceBtn(false);
     } else {
+      handlePointerOver(index, false);
       modalDispatch({ type: ACTIONS.LOGIN_MODAL });
     }
   };
