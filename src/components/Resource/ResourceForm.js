@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   Formik, Form, useField,
 } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import {
   ButtonFieldset, ResourceInput, Submit, H2,
 } from './styles';
 import { Label, Error } from '../../styles';
+import { addNewResource, GlobalContext } from '../../store';
 
 const InputComponent = ({ label, ...props }) => {
   const [field, meta] = useField(props);
@@ -23,8 +23,12 @@ const InputComponent = ({ label, ...props }) => {
 };
 
 export default function ResourceForm({
-  resourceSkills, setResourceSkills, skillId, setResourceForm, setAddResourceBtn,
+  skillId,
+  setResourceForm,
+  setAddResourceBtn,
 }) {
+  const { dashboardDispatch } = useContext(GlobalContext);
+
   const schema = Yup.object().shape({
     title: Yup.string().required(' Give your resource a title :)'),
     link: Yup.string().required(' Add a link to remember'),
@@ -32,26 +36,9 @@ export default function ResourceForm({
 
   const handleAddResource = (values) => {
     const { title, link } = values;
-    console.log('****** inside handle add resource');
-
-    axios.post('/add-resource', { title, link, skillId }).then((result) => {
-      /* resourceSkills = {
-        1: [ { name ... }, {}, {}],
-        2: [ { name ... }, {}, {}],
-      }
-      resourceSkills[1] = [{name...},{},{}]
-      resourceSkills[10] -> key 10 doesn't even exist
-      */
-      console.log(result.data);
-      if (resourceSkills[skillId]) {
-        resourceSkills[skillId].push({ name: title, link });
-      } else {
-        resourceSkills[skillId] = [{ name: title, link }];
-      }
-      setResourceSkills({ ...resourceSkills });
-      setResourceForm(false);
-      setAddResourceBtn(true);
-    });
+    addNewResource(dashboardDispatch, title, link, skillId);
+    setResourceForm(true);
+    setAddResourceBtn(true);
   };
 
   const handleCancelForm = () => {

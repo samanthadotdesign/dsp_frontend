@@ -79,6 +79,23 @@ const dashboardReducer = (state, action) => {
         ...state,
         categoriesCompleted: action.payload,
       };
+    case ACTIONS.ADD_RESOURCES:
+      const { name, link, skillId } = action.payload;
+      // First check if an array exists,
+      // If resource exist, push a new resource into that skillId array
+      // ?? instead of || because empty array is an invalid variable
+      const existingSkillResources = state.resources[skillId] ?? [];
+      const skillResources = [
+        ...existingSkillResources,
+        { name, link },
+      ];
+      // Copying the resources object
+      // Overrides with the new key that contains all the previous resources + new one
+      const newResources = { ...state.resources, [skillId]: skillResources };
+      return {
+        ...state,
+        resources: newResources,
+      };
     default:
       return state;
   }
@@ -220,6 +237,20 @@ export const addNewSkill = (dashboardDispatch, skillId, userId, skillCompleted) 
     dashboardDispatch({
       type: ACTIONS.COMPLETE_CATEGORY,
       payload: categoriesCompleted,
+    });
+  });
+};
+
+export const addNewResource = (dashboardDispatch, title, link, skillId) => {
+  axios.post(`${REACT_APP_BACKEND_URL}/add-resource`, { title, link, skillId }).then((result) => {
+    // newResource is being sent back from resources controller (backend)
+    const { resourceName: name, resourceLink, skillId: id } = result.data;
+
+    console.log('CHECKING MUTATION', id, name, resourceLink);
+
+    dashboardDispatch({
+      type: ACTIONS.ADD_RESOURCES,
+      payload: { name, link: resourceLink, skillId: id },
     });
   });
 };

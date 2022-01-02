@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import { GlobalContext, addNewSkill, ACTIONS } from '../../store';
 import ResourceForm from './ResourceForm';
 import {
@@ -16,7 +16,6 @@ export default function Resource({ skill }) {
 
   const [resourceForm, setResourceForm] = useState(false);
   const [addResourceBtn, setAddResourceBtn] = useState(true);
-  const [resourceModalVisible, setResourceModalVisible] = useState(false);
 
   // resourcesForSkillId is an array of objects [{ name: ... link: ...}, {}]
   const resourcesForSkillId = resources[skillId];
@@ -33,55 +32,11 @@ export default function Resource({ skill }) {
     }
   };
 
-  //   axios.put('/skill', { skillId, skillCompleted }).then((result) => {
-  //     const { currentCategoryId, currentCategory, categoryIsComplete } = result.data;
-
-  //
-  //      */
-  //     if (skillCompleted) {
-  //       const skillsArray = skillCompletedArr.filter((id) => id != skillId);
-  //       setSkillCompleted(skillsArray);
-
-  //       // categoriesCompleted is an array of objects
-  //       // We only modify the categories completed list if the categoriesCompleted array isn't empty
-  //       if (!categoryIsComplete && categoriesCompleted.length > 0) {
-  //         const categoriesArray = categoriesCompleted.filter(
-  //           (category) => category.id !== currentCategoryId,
-  //         );
-  //         console.log('running inside when categories length is greater than 0');
-  //         setCategoriesCompleted(categoriesArray);
-  //       }
-
-  //     /* If the skill is not yet completed,
-  //     the user is clicking to "complete skill */
-  //     } else {
-  //       setSkillCompleted([...skillCompletedArr, skillId]);
-
-  //       /* categoryIsComplete comes from the backend response
-  //       If categoryIsComplete, add new categoryId to the categoriesCompleted */
-  //       if (categoryIsComplete) {
-  //         // If there are existing completed categories, spread the array and add to it
-  //         if (categoriesCompleted.length > 0) {
-  //           setCategoriesCompleted([...categoriesCompleted, currentCategory]);
-  //           console.log('adding to categories array');
-  //         } else {
-  //           setCategoriesCompleted([currentCategory]);
-  //           console.log('replacing categories array');
-  //         }
-  //       }
-  //     }
-  //   });
-  // };
-
-  // // Add the new inline fields for user to add the resource
-  // const handleShowForm = () => {
-  //   setResourceForm(true);
-  //   setAddResourceBtn(false);
-  // };
-
-  // const toggleResourceModal = () => {
-  //   setResourceModalVisible(false);
-  // };
+  // Add the new inline fields for user to add the resource
+  const handleShowForm = () => {
+    setResourceForm(true);
+    setAddResourceBtn(false);
+  };
 
   // If skill is complete, the copy is Uncomplete Skill
   return (
@@ -115,7 +70,7 @@ export default function Resource({ skill }) {
       {addResourceBtn && (
         <SecondaryButton
           type="button"
-          // onClick={handleShowForm}
+          onClick={handleShowForm}
         >
           Add Resource
         </SecondaryButton>
