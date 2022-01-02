@@ -1,90 +1,68 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Skill from '../Skill';
-import Resource from '../Resource/Resource';
-import { Grid, SectionDiv, HoverResourceDiv } from './styles';
+import React, { useState, useEffect, useContext } from 'react';
+import { GlobalContext } from '../../store';
+import HoverResource from '../Resource/HoverResource';
+import { Grid, SectionDiv } from './styles';
 import { H1 } from '../../styles';
 
+// For each section component, print the skills and its resources
 export default function Section({
-  id, sectionName, skills, categoriesCompleted, setCategoriesCompleted,
+  sectionId,
+  sectionName,
 }) {
-  // sectionSkills = [ { skillName: ..., skillImg: ..., completed: True }, {} ]
-  const [sectionSkills, setSectionSkills] = useState([]);
-  const [resourceSkills, setResourceSkills] = useState([]);
-  const [skillCompletedArr, setSkillCompleted] = useState([]);
-  const [skillsHoverState, setSkillsHoverState] = useState([]);
+  const { authStore, dashboardStore, dashboardDispatch } = useContext(GlobalContext);
+  const { categories, skillIdsCompleted, skills } = dashboardStore;
+  const [populatedSkills, setPopulatedSkills] = useState([]);
+  // On initial load, skillsHoverStsate is undefined,
+  // only 1 skillHoverState can be shown at one time
+  // Toggling between false and index of the hover div we want open
+  const [skillsHoverState, setSkillsHoverState] = useState();
 
   // On load, print all the skills for each section
-  // For each section, get all the categoryId
-  // section 0 = [0], section 1 = [1, 2, 3], section 2 = [4, 5]
+  // section -> category (sectionId) -> skill
+  // array of categories in the section [ { id, categoryName ... sectionId }]
+  const categoriesInSection = categories.filter((category) => category.sectionId === sectionId);
+
+  // array of skills in the section
+  const skillsInSection = skills.filter((skill) => {
+    const { categoryId } = skill;
+    const singleSkillInCategory = categoriesInSection.find(
+      (category) => category.id === categoryId,
+    );
+    return singleSkillInCategory;
+  });
+
+  // Color skills that are completed, refresh when skill have been added
   useEffect(() => {
-    axios.get(`/category-id/${id}`).then((result) => {
-      const { categoryIds, skillIdsCompleted } = result.data;
-
-      // Set skill ids completed so we can set it inside the skill boolean
-      setSkillCompleted(skillIdsCompleted);
-      // Get all the skills for each section
-      const skillsInCategories = skills.filter((skill) => categoryIds.includes(skill.categoryId));
-
-      const temporalSectionSkills = new Array(skillsInCategories.length).fill(false);
-
-      // Setting the conditions for muted/colored
-      setSectionSkills(skillsInCategories);
-      setSkillsHoverState(temporalSectionSkills);
-      console.log('********* SECTION SKILLS *******');
-      console.log(skillsInCategories);
+    const coloredSkills = skillsInSection.map((skill) => {
+      const condition = skillIdsCompleted.find((skillId) => skillId === skill.id);
+      if (condition) {
+        return { ...skill, isCompleted: true };
+      }
+      return { ...skill, isCompleted: false };
     });
-  }, [skills]);
+    setPopulatedSkills(coloredSkills);
+  }, [skillIdsCompleted]);
 
-  // On load, get all the resources
-  // Find the resources via skill id
-  useEffect(() => {
-    axios.get('/resources').then((result) => {
-      setResourceSkills(result.data);
-    });
-  }, []);
-
-  const handlePointerOver = (index) => {
-    const tempArray = [...new Array(sectionSkills.length).fill(false)];
-    tempArray[index] = true;
-    console.log('*** TEMP ARRAY*** ');
-    console.log(tempArray);
-    setSkillsHoverState(tempArray);
+  const handlePointerOver = (index, bool) => {
+    setSkillsHoverState(bool ? index : undefined);
   };
 
   return (
     <>
-      <SectionDiv id={id}>
+      <SectionDiv id={sectionId}>
         <H1>{sectionName}</H1>
         {/* For every section, create a grid for all the skills with that section id */}
         <Grid className="grid">
           {/* Map an array of skill objects into divs */}
-          {sectionSkills.map((skill, index) => (
-            <HoverResourceDiv
-              onPointerOver={() => handlePointerOver(index)}
-            >
-              <Skill
-                skillName={skill.skillName}
-                skillImg={skill.skillImg}
-                skillCompleted={skillCompletedArr.includes(skill.id)}
-
-              />
-              {/* Todo: remove hoverresourcediv styled component & conditionally render the resource div */}
-              <Resource
-                skillId={skill.id}
-                skillName={skill.skillName}
-                resourceSkills={resourceSkills}
-                setResourceSkills={setResourceSkills}
-                skillCompletedArr={skillCompletedArr}
-                skillCompleted={skillCompletedArr.includes(skill.id)}
-                categoriesCompleted={categoriesCompleted}
-                setSkillCompleted={setSkillCompleted}
-                setCategoriesCompleted={setCategoriesCompleted}
-              />
-            </HoverResourceDiv>
+          {populatedSkills.map((skill, index) => (
+            <HoverResource
+              skillsHoverState={skillsHoverState}
+              handlePointerOver={handlePointerOver}
+              skill={skill}
+              index={index}
+            />
           ))}
         </Grid>
-
       </SectionDiv>
     </>
   );

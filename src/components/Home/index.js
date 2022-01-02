@@ -1,54 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { GlobalStyle, P } from '../../styles';
-import Modal from '../Modal';
-import { SignUpForm, LogInForm, ErrorForm } from '../Form';
 import { Section, Em } from './styles';
 import { Animation } from './Animation';
+import { GlobalContext } from '../../store';
 
-export default function Home({
-  showLogInModal,
-  toggleLogInModal,
-  toggleSignUpModal,
-  showSignUpModal,
-  setLoggedIn,
-  showErrorModal,
-  toggleErrorModal,
-}) {
+export default function Home() {
+  const { authStore } = useContext(GlobalContext);
+  const { loggedIn } = authStore;
+
   return (
     <>
       <GlobalStyle />
-      <Animation />
-
-      {showSignUpModal && (
-        <Modal toggleModal={toggleSignUpModal}>
-          <SignUpForm
-            setLoggedIn={setLoggedIn}
-            toggleSignUpModal={toggleSignUpModal}
-            toggleLogInModal={toggleLogInModal}
-            toggleErrorModal={toggleErrorModal}
-          />
-        </Modal>
-      )}
-
-      {showLogInModal && (
-      <Modal toggleModal={toggleLogInModal}>
-        <LogInForm
-          setLoggedIn={setLoggedIn}
-          toggleLogInModal={toggleLogInModal}
-          toggleSignUpModal={toggleSignUpModal}
-          toggleErrorModal={toggleErrorModal}
-        />
-      </Modal>
-      )}
-
-      {showErrorModal && (
-      <Modal toggleModal={toggleErrorModal}>
-        <ErrorForm
-          toggleLogInModal={toggleLogInModal}
-          toggleSignUpModal={toggleSignUpModal}
-        />
-      </Modal>
-      )}
+      {!loggedIn && <Animation />}
 
       <Section>
         <P>

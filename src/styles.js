@@ -65,6 +65,7 @@ export const Button = styled.button`
 
 export const SecondaryButton = styled.button`
   font-family: 'Atkinson Regular';
+  color: ${dark};
   font-size: 16px;
   width: 100%;
   padding: 4px;
@@ -82,6 +83,7 @@ export const SecondaryButton = styled.button`
 
   @media screen and (max-width: 550px) {
     padding: 8px;
+    font-size: 16px;
   }
 `;
 

@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ResourceDiv } from '../Resource/styles';
 
 export const Grid = styled.div`
   width: 75vw;
@@ -33,8 +32,4 @@ export const SectionDiv = styled.div`
 
 export const HoverResourceDiv = styled.div`
   position: relative;
-
-  &:hover ${ResourceDiv} {
-    visibility: visible;
-  }
 `;
