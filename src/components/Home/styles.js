@@ -17,3 +17,10 @@ export const Em = styled.em`
   font-style: normal;
   font-size: 16px;
 `;
+
+export const Divider = styled.div`
+  height: 0.5px;
+  background-color: #ccc;
+  width: 100%;
+  margin: 16px 0;
+}`;

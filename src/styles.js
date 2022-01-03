@@ -183,3 +183,9 @@ export const TextLink = styled.a`
     color: ${gray};
   }
 `;
+
+export const ThinSpacer = styled.div`
+  height: 6px;
+  margin: 0;
+  padding: 0;
+`;
