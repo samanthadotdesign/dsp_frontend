@@ -1,27 +1,27 @@
-import React, { useReducer } from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import React, { useReducer } from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
 
 export const ACTIONS = {
-  GET_WINDOW_DIMENSIONS: 'Get window dimensions for the browser',
-  GET_TOUCH_CAPABILITIES: 'Register if window has touch capabilities',
+  GET_WINDOW_DIMENSIONS: "Get window dimensions for the browser",
+  GET_TOUCH_CAPABILITIES: "Register if window has touch capabilities",
 
-  GET_DATA: 'Get all initial data to show dashboard',
-  GET_USER_DATA: 'Get all skills and categories for user',
-  GET_USER_RESOURCES: 'Get all the resources that belong to user',
-  COMPLETE_SKILL: 'Add completed skill to user',
-  COMPLETE_CATEGORY: 'Add completed category of skills to user',
-  ADD_RESOURCES: 'Add new resource for the unique user',
+  GET_DATA: "Get all initial data to show dashboard",
+  GET_USER_DATA: "Get all skills and categories for user",
+  GET_USER_RESOURCES: "Get all the resources that belong to user",
+  COMPLETE_SKILL: "Add completed skill to user",
+  COMPLETE_CATEGORY: "Add completed category of skills to user",
+  ADD_RESOURCES: "Add new resource for the unique user",
 
-  USER_LOGGEDIN: 'Add or log in new user with list of default skills',
-  USER_LOGOUT: 'Log user out of account',
-  USER_AUTH: 'Check if user is logged in or not',
-  USER_ERROR: 'Network error for logging in or signing up user',
+  USER_LOGGEDIN: "Add or log in new user with list of default skills",
+  USER_LOGOUT: "Log user out of account",
+  USER_AUTH: "Check if user is logged in or not",
+  USER_ERROR: "Network error for logging in or signing up user",
 
-  CLOSE_MODALS: 'Closes all modals',
-  SIGNUP_MODAL: 'Opens sign up modal only',
-  LOGIN_MODAL: 'Opens login modal only',
-  ERROR_MODAL: 'Opens error modal only',
+  CLOSE_MODALS: "Closes all modals",
+  SIGNUP_MODAL: "Opens sign up modal only",
+  LOGIN_MODAL: "Opens login modal only",
+  ERROR_MODAL: "Opens error modal only",
 };
 
 // Initial store states
@@ -87,10 +87,7 @@ const dashboardReducer = (state, action) => {
       // If resource exist, push a new resource into that skillId array
       // ?? instead of || because empty array is an invalid variable
       const existingSkillResources = state.resources[skillId] ?? [];
-      const skillResources = [
-        ...existingSkillResources,
-        { name, link },
-      ];
+      const skillResources = [...existingSkillResources, { name, link }];
       // Copying the resources object
       // Overrides with the new key that contains all the previous resources + new one
       const newResources = { ...state.resources, [skillId]: skillResources };
@@ -179,10 +176,19 @@ const windowReducer = (state, action) => {
 const { Provider } = GlobalContext;
 
 export const GlobalProvider = ({ children }) => {
-  const [dashboardStore, dashboardDispatch] = useReducer(dashboardReducer, initialState);
+  const [dashboardStore, dashboardDispatch] = useReducer(
+    dashboardReducer,
+    initialState
+  );
   const [authStore, authDispatch] = useReducer(authReducer, initialAuthState);
-  const [modalStore, modalDispatch] = useReducer(modalReducer, initialModalState);
-  const [windowStore, windowDispatch] = useReducer(windowReducer, initialWindowState);
+  const [modalStore, modalDispatch] = useReducer(
+    modalReducer,
+    initialModalState
+  );
+  const [windowStore, windowDispatch] = useReducer(
+    windowReducer,
+    initialWindowState
+  );
 
   return (
     <Provider
@@ -207,7 +213,8 @@ GlobalProvider.propTypes = {
 };
 
 // Connections to database
-const REACT_APP_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:3004';
+const REACT_APP_BACKEND_URL =
+  import.meta.env.VITE_REACT_APP_BACKEND_URL || "http://localhost:3004";
 
 /** ***************** */
 /** ** DASHBOARD **** */
@@ -225,41 +232,55 @@ export const getData = (dashboardDispatch, userId) => {
 
 // Find the resources via skillId and userId
 export const getUserResources = (dashboardDispatch, skillId, userId) => {
-  axios.get(`${REACT_APP_BACKEND_URL}/resources/${skillId}/${userId}`).then((result) => {
-    dashboardDispatch({
-      type: ACTIONS.GET_USER_RESOURCES,
-      payload: result.data,
+  axios
+    .get(`${REACT_APP_BACKEND_URL}/resources/${skillId}/${userId}`)
+    .then((result) => {
+      dashboardDispatch({
+        type: ACTIONS.GET_USER_RESOURCES,
+        payload: result.data,
+      });
     });
-  });
 };
 
 // Replaces array of skillIds & array of category objects every time
-export const addNewSkill = (dashboardDispatch, skillId, userId, skillCompleted) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/skill/${skillId}`, { userId, skillCompleted }).then((result) => {
-    const { updatedSkillIds, categoriesCompleted } = result.data;
-    dashboardDispatch({
-      type: ACTIONS.COMPLETE_SKILL,
-      payload: updatedSkillIds,
+export const addNewSkill = (
+  dashboardDispatch,
+  skillId,
+  userId,
+  skillCompleted
+) => {
+  axios
+    .post(`${REACT_APP_BACKEND_URL}/skill/${skillId}`, {
+      userId,
+      skillCompleted,
+    })
+    .then((result) => {
+      const { updatedSkillIds, categoriesCompleted } = result.data;
+      dashboardDispatch({
+        type: ACTIONS.COMPLETE_SKILL,
+        payload: updatedSkillIds,
+      });
+      dashboardDispatch({
+        type: ACTIONS.COMPLETE_CATEGORY,
+        payload: categoriesCompleted,
+      });
     });
-    dashboardDispatch({
-      type: ACTIONS.COMPLETE_CATEGORY,
-      payload: categoriesCompleted,
-    });
-  });
 };
 
 export const addNewResource = (dashboardDispatch, title, link, skillId) => {
-  axios.post(`${REACT_APP_BACKEND_URL}/add-resource`, { title, link, skillId }).then((result) => {
-    // newResource is being sent back from resources controller (backend)
-    const { resourceName: name, resourceLink, skillId: id } = result.data;
+  axios
+    .post(`${REACT_APP_BACKEND_URL}/add-resource`, { title, link, skillId })
+    .then((result) => {
+      // newResource is being sent back from resources controller (backend)
+      const { resourceName: name, resourceLink, skillId: id } = result.data;
 
-    console.log('CHECKING MUTATION', id, name, resourceLink);
+      console.log("CHECKING MUTATION", id, name, resourceLink);
 
-    dashboardDispatch({
-      type: ACTIONS.ADD_RESOURCES,
-      payload: { name, link: resourceLink, skillId: id },
+      dashboardDispatch({
+        type: ACTIONS.ADD_RESOURCES,
+        payload: { name, link: resourceLink, skillId: id },
+      });
     });
-  });
 };
 
 /** ***************** */
@@ -267,7 +288,7 @@ export const addNewResource = (dashboardDispatch, title, link, skillId) => {
 /** ***************** */
 export const addUser = (authDispatch, values) => {
   axios.post(`${REACT_APP_BACKEND_URL}/signup`, values).then((result) => {
-    if (result.data.status === 'OK') {
+    if (result.data.status === "OK") {
       authDispatch({
         type: ACTIONS.USER_LOGGEDIN,
         payload: result.data.newUser.id,
@@ -279,24 +300,25 @@ export const addUser = (authDispatch, values) => {
   });
 };
 
-export const loginUser = (authDispatch, values) => axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
-  if (result.data.status === 'OK') {
-    const { data } = result;
-    authDispatch({
-      type: ACTIONS.USER_LOGGEDIN,
-      payload: data.userId,
-    });
-    return data;
-  }
-  return {};
-});
+export const loginUser = (authDispatch, values) =>
+  axios.post(`${REACT_APP_BACKEND_URL}/login`, values).then((result) => {
+    if (result.data.status === "OK") {
+      const { data } = result;
+      authDispatch({
+        type: ACTIONS.USER_LOGGEDIN,
+        payload: data.userId,
+      });
+      return data;
+    }
+    return {};
+  });
 
 export const logoutUser = (authDispatch) => {
   axios.post(`${REACT_APP_BACKEND_URL}/logout`).then((result) => {
-    if (result.data === 'OK') {
-      localStorage.removeItem('userId');
-      localStorage.removeItem('loggedInDate');
-      localStorage.removeItem('loggedIn');
+    if (result.data === "OK") {
+      localStorage.removeItem("userId");
+      localStorage.removeItem("loggedInDate");
+      localStorage.removeItem("loggedIn");
 
       authDispatch({
         type: ACTIONS.USER_LOGOUT,
@@ -308,9 +330,9 @@ export const logoutUser = (authDispatch) => {
 // On initialization, we check the localStorage if the user is logged in
 export const authUser = (authDispatch) => {
   // Get data from localStorage
-  const userId = localStorage.getItem('userId');
-  const loggedInDateTimespamp = localStorage.getItem('loggedInDate');
-  const loggedIn = localStorage.getItem('loggedIn');
+  const userId = localStorage.getItem("userId");
+  const loggedInDateTimespamp = localStorage.getItem("loggedInDate");
+  const loggedIn = localStorage.getItem("loggedIn");
 
   // Define how long we want the session to be valid for
   const currentDate = new Date();
@@ -320,9 +342,9 @@ export const authUser = (authDispatch) => {
   const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
   if (differenceInDays > 6) {
-    localStorage.removeItem('userId');
-    localStorage.removeItem('loggedInDate');
-    localStorage.removeItem('loggedIn');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("loggedInDate");
+    localStorage.removeItem("loggedIn");
     return false;
   }
   authDispatch({
@@ -338,7 +360,7 @@ export const authUser = (authDispatch) => {
 export const handleWindowDimensions = (windowDispatch) => {
   // On initial load, set the window width and height
   const { innerWidth: width, innerHeight: height } = window;
-  const isMobile = (width < 550);
+  const isMobile = width < 550;
   windowDispatch({
     type: ACTIONS.GET_WINDOW_DIMENSIONS,
     payload: {
@@ -351,7 +373,7 @@ export const handleWindowDimensions = (windowDispatch) => {
 };
 
 export const handleTouchCapabilities = (windowDispatch) => {
-  const isTouchDevice = 'ontouchstart' in window;
+  const isTouchDevice = "ontouchstart" in window;
   windowDispatch({
     type: ACTIONS.GET_TOUCH_CAPABILITIES,
     payload: isTouchDevice,

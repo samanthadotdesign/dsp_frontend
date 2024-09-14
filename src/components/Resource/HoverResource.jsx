@@ -1,12 +1,15 @@
-import { useRef, useContext } from 'react';
-import Skill from '../Skill';
-import Resource from './Resource';
-import { HoverResourceDiv } from '../Section/styles';
-import useOnClickOutside from '../../utils/useOnClickOutside';
-import { GlobalContext } from '../../store';
+import { useRef, useContext } from "react";
+import Skill from "../Skill";
+import Resource from "./Resource";
+import { HoverResourceDiv } from "../Section/styles";
+import useOnClickOutside from "../../utils/useOnClickOutside";
+import { GlobalContext } from "../../store";
 
 export default function HoverResource({
-  skill, index, handlePointerOver, skillsHoverState,
+  skill,
+  index,
+  handlePointerOver,
+  skillsHoverState,
 }) {
   const { windowStore } = useContext(GlobalContext);
   const { width, isTouchDevice } = windowStore;
@@ -14,6 +17,7 @@ export default function HoverResource({
   // Executes shutting off the resource div visbility
   const target = useRef();
   useOnClickOutside(target, () => {
+    ÍÍ;
     if (skillsHoverState == index) {
       handlePointerOver(index, false);
     }
@@ -28,12 +32,8 @@ export default function HoverResource({
           handlePointerOver(index, false);
         }
       }}
-      key={`hover-skill-${index}`}
     >
-      <Skill
-        skill={skill}
-        key={`skill-${index}`}
-      />
+      <Skill skill={skill} key={`skill-${index}`} />
       {skillsHoverState == index ? (
         <Resource
           index={index}
@@ -42,7 +42,6 @@ export default function HoverResource({
           key={`resource-${index}`}
         />
       ) : null}
-
     </HoverResourceDiv>
   );
 }
